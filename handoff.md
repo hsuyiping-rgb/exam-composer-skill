@@ -5,11 +5,15 @@
 ## ⏯️ 目前做到哪
 需求訪談＋技能撰寫已完成，`exam-composer` 技能（`C:\Users\vm\.claude\skills\exam-composer\SKILL.md`）的 Step 0～5、功能五（篩選替換）、功能六（NotebookLM 整合）全部用真實資料端到端測試過一輪，全部測試通過（過程中抓到並修正了好幾個實作落差，見下方注意事項）。
 
+2026-08-02 已完成一份正式命題成果：`命題成果/115上_六年級_數學_第一次定期考察/`。範圍為南一版六年級數學 115 上第 1~3 單元，題型配分為選擇20、填充20、計算25、應用25、素養10，Bloom 比例為記憶10%、理解30%、應用30%、分析20%、評鑑與創造10%。已完成 Step 0~5：教材下載歸檔、教材擷取摘要、雙向細目表骨架、32題試題草稿、108~114 ESA 查重、正式 Word 試題卷、教師解答卷、雙向細目表。
+
 ## 🚦 目前狀態
 - 技能本體已寫成且經過完整端到端測試，可以視為 MVP 完成。
 - `exam-composer` 已安裝到三個全域 skill 位置：Claude `C:\Users\vm\.claude\skills\exam-composer\SKILL.md`、GPT/Codex `C:\Users\vm\.codex\skills\exam-composer\SKILL.md`、Antigravity/Agents `C:\Users\vm\.agents\skills\exam-composer\SKILL.md`。三份 SKILL.md 的 SHA-256 均為 `3952C2911108D3A7B04838E6255EA5E84A88A1984CA535ED2D4F4C44C1EB5A39`。
 - NotebookLM 已建立「命題成果筆記本」（https://notebooklm.google.com/notebook/a9f1f443-5ab7-4ac0-b5d9-345a9266863e），已加入通用參考資料 10 份＋這次測試的專屬來源 6 份。這台電腦的 NotebookLM CLI 現在是登入狀態（`auth_status: configured`）。
 - `命題範圍三家出版商教材/` 有 4 份真實康軒教材（約183MB，已 gitignore）；`命題成果/115上_六年級_國語_第一次定期評量/` 有測試產出的設定摘要＋Word 試題卷＋教師解答卷（3題測試版，非正式完整考卷）。
+- `命題範圍三家出版商教材/南一/115上_六年級_數學/` 有本次正式命題用南一教材：原始 ZIP 5 個、解壓 PDF 15 份（課本、習作、教師手冊、教師專用課本、教師專用習作，各第 1~3 單元）。
+- `命題成果/115上_六年級_數學_第一次定期考察/` 有本次正式成果：`正式試題卷.docx`、`教師解答卷.docx`、`雙向細目表.docx`、`查重報告.md`、`試題草稿.md`、`教材內容擷取.md`、`教材下載清單.md`、`設定摘要.md`、`雙向細目表骨架草案.md`。
 - `光復108課綱歷年定期試題/` 資料夾維持空的，這是正常狀態（Step 4 改用即時截圖比對，不存檔）。
 
 ## ➡️ 下一步
@@ -17,6 +21,7 @@
 2. 若要正式讓某位命題教師使用，Step 1 需要把其餘六課（朱子治家格言選、談遇見更好的自己、臺灣美食詩選、最好的味覺禮物、珍珠奶茶、大小剛好的鞋子）也逐頁精讀，測試時只精讀了第一課「跑道」；SKILL.md 已要求未完整精讀時只能宣稱測試題。
 3. 若之後要用 Node.js 產生正式的 Word 試題卷/雙向細目表（不是這次的3題測試版），寫腳本時務必用 `path.join()` 組合含中文字元的檔案路徑，不要用字串相加＋反斜線；這項防呆已補進 SKILL.md。
 4. 若之後修改任一份全域 `exam-composer`，記得同步到 Claude、GPT/Codex、Antigravity/Agents 三個位置，避免版本漂移。
+5. 若使用者同意，下一步可執行功能六，把 `115上_六年級_數學_第一次定期考察` 的教材、試題卷、解答卷、雙向細目表與查重報告整理進 NotebookLM「命題成果筆記本」。目前尚未執行，因技能規則要求先取得使用者同意。
 
 ## ⚠️ 注意事項
 - **Step A（出版社教材下載）是半自動**：Agent 只負責導航到正確頁面＋列出下載清單，實際點擊下載一定要使用者親手做（瀏覽器會限制/攔截非使用者親手觸發的下載）。
@@ -27,8 +32,10 @@
 - **`exam-composer` 技能檔已同步到 `~/.claude/skills/exam-composer/`、`~/.codex/skills/exam-composer/`、`~/.agents/skills/exam-composer/`**，若有 chezmoi 同步相關目錄記得 `chezmoi re-add`。
 - **2026-08-02 已更新 exam-composer SKILL.md**：同步 Step 4 不存 PDF、Step 0/Step A 完整流程、跨 Agent 瀏覽器工具措辭、NotebookLM 標籤副作用、Step 5 中文路徑防呆、正式出卷前檢查。
 - 這次測試在 `命題範圍三家出版商教材/` 資料夾放的是真實康軒教材 PDF（有著作權），`.gitignore` 已排除，不會進版控，但確實存在於使用者的 GDrive 裡，不要誤刪。
+- 本次 115 上六年級數學正式命題已完成 DOCX 結構性 QA：學生卷 32 題且不含答案、教師卷 32 題且含 32 組答案、雙向細目表有 3 個表格、DOCX XML 無 `????` 亂碼。視覺渲染 QA 未完成：本機未找到 LibreOffice/OpenOffice，Word COM 匯出 PDF 會卡住；已在 `設定摘要.md` 標註此限制。
+- 本次 ESA 查重涵蓋 108~114 七個學年度；111 年試卷為舊 `.doc`，只能用二進位字串備援擷取，混有雜訊，可靠度較低，已在 `查重報告.md` 標註。
 
 ## 🕐 最後更新
 - 時間：2026-08-02
-- 更新者：Claude Code @ DESKTOP-31QBU95
-- Git push：✅ 已推
+- 更新者：Codex @ DESKTOP-31QBU95
+- Git push：本次僅同步流程紀錄與忽略規則；正式試卷、教材、歷年試題與查重工作檔留在本機/GDrive，不推送。
