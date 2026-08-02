@@ -11,7 +11,7 @@
 
 ## 🚦 目前狀態
 - 技能本體已寫成且經過完整端到端測試，可以視為 MVP 完成。
-- `exam-composer` 已安裝到三個全域 skill 位置：Claude `C:\Users\vm\.claude\skills\exam-composer\SKILL.md`、GPT/Codex `C:\Users\vm\.codex\skills\exam-composer\SKILL.md`、Antigravity/Agents `C:\Users\vm\.agents\skills\exam-composer\SKILL.md`。三份 SKILL.md 的 SHA-256 均為 `63E6CC727FEF2367BDE989CFCD7D25CA3C1CE13FE6F92E4196A029FA1E5155A4`。
+- `exam-composer` 已安裝到三個全域 skill 位置：Claude `C:\Users\vm\.claude\skills\exam-composer\SKILL.md`、GPT/Codex `C:\Users\vm\.codex\skills\exam-composer\SKILL.md`、Antigravity/Agents `C:\Users\vm\.agents\skills\exam-composer\SKILL.md`。三份 SKILL.md 的 SHA-256 均為 `096AFDA31BDA0B9F57F574DD73D8D31CEBC3FBDDD93772CF3BB72B6156D368D6`。
 - 2026-08-02 依使用者要求，已刪除舊的 NotebookLM 共用「命題成果筆記本」（原 ID：`a9f1f443-5ab7-4ac0-b5d9-345a9266863e`），並依任務重建三本獨立 Notebook：
   - 國語：`115上_六年級_國語_第一次定期評量_命題成果`，https://notebooklm.google.com/notebook/cd41d6f3-8d29-4535-b7c7-f9b56d410cf9，12 份來源。
   - 數學：`115上_六年級_數學_第一次定期考察_命題成果`，https://notebooklm.google.com/notebook/fd63de1d-c331-4029-b162-bdd26e68a954，30 份來源。
@@ -36,8 +36,9 @@
 - **Step 4 查重不需要（也無法）把歷史 PDF 存進資料夾**，改用 `fetch` 轉 blob URL＋`window.open`＋截圖讀取內容，直接比對，不留檔案。
 - **Node.js 寫入 GDrive 路徑檔案時，字串路徑組合的錯誤不會拋出例外，非常難排查**：這次用 `OUT_DIR + '\中文檔名.docx'`（少打一個反斜線）導致寫入失敗且無任何錯誤訊息，一度誤判成 Word 檔案鎖定或雲端同步問題，浪費不少來回才找到真因。以後一律用 `path.join()`。
 - **NotebookLM 整合新規則**：每次任務建立單獨 Notebook，不沿用舊的共用「命題成果筆記本」；通用參考資料與本次教材/成果都加入該任務專屬筆記本。`label list` 仍應避免，因它曾觸發 AI 自動分類副作用。
+- **題目圖像新規則**：Step 3 逐題撰寫時若題目文字需要圖像輔助（看圖回答、量測、實驗裝置、幾何/座標/圖表、自然科圖示等），需依課本/習作/教師手冊圖示作為構圖與學科精準度參考；需要全新或改版圖像時召喚全域 `draw` 技能，輸出到該次 `命題成果/.../images/`，並在插入 Word 前檢查圖中文字、標籤、比例與題幹一致。
 - **`exam-composer` 技能檔已同步到 `~/.claude/skills/exam-composer/`、`~/.codex/skills/exam-composer/`、`~/.agents/skills/exam-composer/`**，若有 chezmoi 同步相關目錄記得 `chezmoi re-add`。
-- **2026-08-02 已更新 exam-composer SKILL.md**：同步 Step 4 不存 PDF、Step 0/Step A 完整流程、跨 Agent 瀏覽器工具措辭、NotebookLM 每次任務獨立建本、Step 5 中文路徑防呆、正式出卷前檢查。
+- **2026-08-02 已更新 exam-composer SKILL.md**：同步 Step 4 不存 PDF、Step 0/Step A 完整流程、跨 Agent 瀏覽器工具措辭、NotebookLM 每次任務獨立建本、題目需要圖像時召喚 `draw`、Step 5 中文路徑防呆、正式出卷前檢查。
 - 這次測試在 `命題範圍三家出版商教材/` 資料夾放的是真實康軒教材 PDF（有著作權），`.gitignore` 已排除，不會進版控，但確實存在於使用者的 GDrive 裡，不要誤刪。
 - 本次 115 上六年級數學正式命題已完成 DOCX 結構性 QA：學生卷 32 題且不含答案、教師卷 32 題且含 32 組答案、雙向細目表有 3 個表格、DOCX XML 無 `????` 亂碼。視覺渲染 QA 未完成：本機未找到 LibreOffice/OpenOffice，Word COM 匯出 PDF 會卡住；已在 `設定摘要.md` 標註此限制。
 - 本次 ESA 查重涵蓋 108~114 七個學年度；111 年試卷為舊 `.doc`，只能用二進位字串備援擷取，混有雜訊，可靠度較低，已在 `查重報告.md` 標註。
