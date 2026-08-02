@@ -12,7 +12,10 @@
 ## 🚦 目前狀態
 - 技能本體已寫成且經過完整端到端測試，可以視為 MVP 完成。
 - `exam-composer` 已安裝到三個全域 skill 位置：Claude `C:\Users\vm\.claude\skills\exam-composer\SKILL.md`、GPT/Codex `C:\Users\vm\.codex\skills\exam-composer\SKILL.md`、Antigravity/Agents `C:\Users\vm\.agents\skills\exam-composer\SKILL.md`。三份 SKILL.md 的 SHA-256 均為 `63E6CC727FEF2367BDE989CFCD7D25CA3C1CE13FE6F92E4196A029FA1E5155A4`。
-- 2026-08-02 曾將數學與自然部分來源補進舊的 NotebookLM「命題成果筆記本」（https://notebooklm.google.com/notebook/a9f1f443-5ab7-4ac0-b5d9-345a9266863e），但使用者隨後要求暫停並修正流程：**每一次命題任務最後都要建立單獨的新 NotebookLM 筆記本，不再混入共用筆記本**。三份全域 `exam-composer` SKILL.md 已同步修正此規則。
+- 2026-08-02 依使用者要求，已刪除舊的 NotebookLM 共用「命題成果筆記本」（原 ID：`a9f1f443-5ab7-4ac0-b5d9-345a9266863e`），並依任務重建三本獨立 Notebook：
+  - 國語：`115上_六年級_國語_第一次定期評量_命題成果`，https://notebooklm.google.com/notebook/cd41d6f3-8d29-4535-b7c7-f9b56d410cf9，12 份來源。
+  - 數學：`115上_六年級_數學_第一次定期考察_命題成果`，https://notebooklm.google.com/notebook/fd63de1d-c331-4029-b162-bdd26e68a954，30 份來源。
+  - 自然：`115上_六年級_自然_第一次定期考察_命題成果`，https://notebooklm.google.com/notebook/3c1456d7-2dc7-450f-b16d-4e4f67e0455c，20 份來源。
 - `命題範圍三家出版商教材/` 有 4 份真實康軒教材（約183MB，已 gitignore）；`命題成果/115上_六年級_國語_第一次定期評量/` 有測試產出的設定摘要＋Word 試題卷＋教師解答卷（3題測試版，非正式完整考卷）。
 - `命題範圍三家出版商教材/南一/115上_六年級_數學/` 有本次正式命題用南一教材：原始 ZIP 5 個、解壓 PDF 15 份（課本、習作、教師手冊、教師專用課本、教師專用習作，各第 1~3 單元）。
 - `命題範圍三家出版商教材/翰林/115上_六年級_自然/` 有本次命題用翰林教材：原始 ZIP 3 個、解壓資料夾 3 個共包含 PDF 6 份（課本 L01-L02、習作 L01-L03、教專內頁 L01-L02）。
