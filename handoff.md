@@ -8,10 +8,12 @@
 
 同一次對話中，使用者事後要求修正 `exam-composer` 技能的 Step A：教材下載流程從「登入＋下載全部由使用者親手做」改為「登入由使用者做，登入完成後下載由 Agent 接手點擊並驗證」。已修改並同步三處全域 SKILL.md。**這個新流程尚未經過真實下載動作驗證**（本次社會任務的教材下載仍是照舊流程跑完的，SKILL.md 是任務結束後才改的）。
 
+2026-09-03 換到新電腦（`C:\Users\kfes`）開工，發現 `exam-composer` 技能本體在這台完全找不到（三處 skills 目錄、GDrive 全碟、Downloads/Documents/Desktop/OneDrive/chezmoi、repo 全歷史、GitHub 遠端皆無副本）。確認技能檔從未進版控、原版只在舊機器 DESKTOP-31QBU95。已依 `agents.md` 的功能設計總覽與 11 點測試發現**重建一份 SKILL.md**（236 行），安裝到本機 `~/.claude`、`~/.codex`、`~/.agents` 三處（SHA-256 皆為 `CA6C9C90…6B9368B`），並 commit 進 repo `skills/exam-composer/SKILL.md`（commit `1b6b8cf`，已 push）。技能本體自此改以 repo 為單一真實來源。
+
 ## 🚦 目前狀態
 
 - 技能本體（Step 0~5、功能五、功能六）已用四個科目（國語測試版、數學、自然、社會）端到端驗證過，社會這次是首次把 Step 4 查重完整跑滿 108~114 全部 7 個學年度。
-- `exam-composer` 已安裝到三個全域 skill 位置：Claude `C:\Users\vm\.claude\skills\exam-composer\SKILL.md`、GPT/Codex `C:\Users\vm\.codex\skills\exam-composer\SKILL.md`、Antigravity/Agents `C:\Users\vm\.agents\skills\exam-composer\SKILL.md`。三份 SKILL.md 的 SHA-256 均為 `E44025BEAC7164D1209C47DDF6AD6E3C11C91AE55D5FDDF9150EC8C822FD0F43`（2026-08-04 Step A 改版後的版本，跟 2026-08-02 版不同，若手上有舊版要重新同步）。
+- **`exam-composer` 技能本體的單一真實來源已改為 repo 的 `skills/exam-composer/SKILL.md`**（2026-09-03 起）。各機器從 repo 同步到三個全域 skill 位置：Claude `~/.claude/skills/exam-composer/SKILL.md`、GPT/Codex `~/.codex/skills/exam-composer/SKILL.md`、Antigravity/Agents `~/.agents/skills/exam-composer/SKILL.md`。本機（`C:\Users\kfes`）四份 SHA-256 均為 `CA6C9C908F9A9EABC92926570D0D3BE17E90213D215C0860264D81FCC6B9368B`（2026-09-03 重建版）。⚠️ **舊機器 DESKTOP-31QBU95（`C:\Users\vm`）上的原版 SHA-256 為 `E44025BEAC7164D1209C47DDF6AD6E3C11C91AE55D5FDDF9150EC8C822FD0F43`，內容可能有重建版沒涵蓋到的細節（對話措辭、Word 排版參數、esa-exam-review 實際呼叫方式等）。**若之後回到那台，**不要直接覆蓋**，先與 repo 版逐段比對差異、擇優合併後再以 repo 為準。
 - NotebookLM 目前有 4 本任務專屬筆記本（各自獨立，不共用）：
   - 國語：`115上_六年級_國語_第一次定期評量_命題成果`，https://notebooklm.google.com/notebook/cd41d6f3-8d29-4535-b7c7-f9b56d410cf9，12 份來源（測試版，非完整考卷）。
   - 數學：`115上_六年級_數學_第一次定期考察_命題成果`，https://notebooklm.google.com/notebook/fd63de1d-c331-4029-b162-bdd26e68a954，30 份來源。
@@ -23,9 +25,10 @@
 
 ## ➡️ 下一步
 
-1. **Step A 新流程（Agent 接手下載）尚未實測**：下次執行命題任務、走到 Step A 時，這是首次真實驗證「使用者登入後 Agent 點擊下載按鈕」是否真的能觸發瀏覽器下載（康軒/翰林/南一三家可能各自反應不同）。驗證結果（成功/被導去登入頁/被瀏覽器攔截）務必記錄回 `agents.md`「測試發現與修正」第10點，並視結果決定要不要再調整 SKILL.md。
-2. 若要正式讓某位命題教師使用**國語**科，Step 1 需要把其餘六課也逐頁精讀（測試時只精讀了第一課「跑道」）；這與本次社會任務無關，是舊的未完成項目。
-3. 若之後修改任一份全域 `exam-composer`，記得同步到 Claude、GPT/Codex、Antigravity/Agents 三個位置並比對 SHA-256，避免版本漂移。
+1. **回舊機器 DESKTOP-31QBU95 時，取回原版 SKILL.md 與 repo 重建版逐段比對**，把原版獨有的細節合併進 repo 版，之後三處一律從 repo 同步。
+2. **Step A 新流程（Agent 接手下載）尚未實測**：下次執行命題任務、走到 Step A 時，這是首次真實驗證「使用者登入後 Agent 點擊下載按鈕」是否真的能觸發瀏覽器下載（康軒/翰林/南一三家可能各自反應不同）。驗證結果（成功/被導去登入頁/被瀏覽器攔截）務必記錄回 `agents.md`「測試發現與修正」第10點，並視結果決定要不要再調整 SKILL.md。
+3. 若要正式讓某位命題教師使用**國語**科，Step 1 需要把其餘六課也逐頁精讀（測試時只精讀了第一課「跑道」）；這與本次社會任務無關，是舊的未完成項目。
+4. 若之後修改 `exam-composer`，**先改 repo 的 `skills/exam-composer/SKILL.md` 再同步到 Claude、GPT/Codex、Antigravity/Agents 三個位置**，四份比對 SHA-256 並 commit，避免版本漂移。
 
 ## ⚠️ 注意事項
 
@@ -36,12 +39,12 @@
 - **Node.js 寫入 GDrive 路徑檔案時，字串路徑組合的錯誤不會拋出例外**：一律用 `path.join()`，不要用字串相加＋反斜線。
 - **NotebookLM 整合規則**：每次任務建立單獨 Notebook，不沿用舊的共用筆記本；通用參考資料與本次教材/成果都加入該任務專屬筆記本。`label list` 應避免，因它曾觸發 AI 自動分類副作用。
 - **題目圖像規則**：Step 3 逐題撰寫時若題目文字需要圖像輔助，需依課本/習作/教師手冊圖示作為構圖與學科精準度參考；需要全新或改版圖像時召喚全域 `draw` 技能，輸出到該次 `命題成果/.../images/`。本次社會命題經評估後判定不需要圖像（全用文字表格呈現素養題情境），詳見 `試題草稿.md` 的「圖像需求評估」段落。
-- **`exam-composer` 技能檔已同步到 `~/.claude/skills/exam-composer/`、`~/.codex/skills/exam-composer/`、`~/.agents/skills/exam-composer/`**，若有 chezmoi 同步相關目錄記得 `chezmoi re-add`。
+- **`exam-composer` 技能檔已納入本 repo 版控（`skills/exam-composer/SKILL.md`，2026-09-03 commit `1b6b8cf`）**，這是單一真實來源；`~/.claude/skills/`、`~/.codex/skills/`、`~/.agents/skills/` 三處都是它的複本。換電腦時直接 clone repo 再複製到三處即可，**不需要也不應該再依賴 chezmoi 同步 exam-composer**（chezmoi 目前只管 `dot_codex/skills/shutdown-sync`，從未管過 exam-composer——這正是這次找不到技能的原因）。
 - **本次社會命題已完成 DOCX 結構性 QA**：學生卷選擇20+是非10共30個空白括號且不含答案、教師卷20個選擇答案+10個是非答案（○/×各5）+5個填充答案+7段素養題參考答案皆已填入、雙向細目表含3個表格、DOCX XML 無 `????` 亂碼。視覺渲染 QA 未完成：本機無 LibreOffice/pandoc，無法轉 PDF 做排版確認，已在 `設定摘要.md` 標註此限制，建議教師實際用 Word 開啟檢查。
 - **本次 ESA 查重涵蓋 108~114 全部七個學年度**，逐份實際開啟比對（不是只看清單），發現113-1一題命題框架相近已改寫，詳見 `查重報告.md`。
 - **瀏覽器連線穩定性**：本次任務中使用者中途關閉過 Chrome，導致 Claude in Chrome 擴充功能連線與登入狀態全部遺失，出現多輪「顯示登出→請重新登入→又斷線」的迴圈。**下次操作前先提醒使用者：執行 Step A / Step 4 這類需要瀏覽器登入的階段時，Chrome 視窗不要中途關閉。** 若連線意外中斷，先呼叫 `list_connected_browsers` 確認目前裝置是否還是原本那個，不要假設連線沒變。
 
 ## 🕐 最後更新
-- 時間：2026-08-04 17:21
-- 更新者：Claude @ DESKTOP-31QBU95
-- Git push：✅ 已推
+- 時間：2026-09-03
+- 更新者：Claude @ kfes（新電腦）
+- Git push：✅ 已推（commit `1b6b8cf`）
