@@ -10,9 +10,13 @@
 
 2026-09-03 換到新電腦（`C:\Users\kfes`）開工，發現 `exam-composer` 技能本體在這台完全找不到（三處 skills 目錄、GDrive 全碟、Downloads/Documents/Desktop/OneDrive/chezmoi、repo 全歷史、GitHub 遠端皆無副本）。確認技能檔從未進版控、原版只在舊機器 DESKTOP-31QBU95。已依 `agents.md` 的功能設計總覽與 11 點測試發現**重建一份 SKILL.md**（236 行），安裝到本機 `~/.claude`、`~/.codex`、`~/.agents` 三處（SHA-256 皆為 `CA6C9C90…6B9368B`），並 commit 進 repo `skills/exam-composer/SKILL.md`（commit `1b6b8cf`，已 push）。技能本體自此改以 repo 為單一真實來源。
 
+同一天稍晚，開始新任務 **115上_五年級_數學_第一次定期考察（翰林版、第一~四單元）**。Step 0 已完成並存檔 `設定摘要.md`（題型：選擇20／填充15／計算30／應用25／素養10；Bloom：記憶20／理解30／應用30／分析10／評鑑創造10，兩者合計均為100）。**Step A 受阻，教材尚未取得**：新電腦沒裝 Claude in Chrome 擴充功能，改用預覽列內建瀏覽器；使用者本人完成親師生平台登入後，Agent 成功接手導航並以 SSO 進入翰林「行動大師3」，但翰林只提供光碟 ISO 與 H5 線上閱讀、**不提供 PDF**，且預覽列瀏覽器會吃掉彈出新視窗，兩條路都走不通。詳見 `agents.md` 測試發現第 13 點。
+
 ## 🚦 目前狀態
 
 - 技能本體（Step 0~5、功能五、功能六）已用四個科目（國語測試版、數學、自然、社會）端到端驗證過，社會這次是首次把 Step 4 查重完整跑滿 108~114 全部 7 個學年度。
+- **進行中任務：`命題成果/115上_五年級_數學_第一次定期考察/`**，目前只有 `設定摘要.md`（Step 0 產物）。卡在 Step A 教材下載，Step 1 之後都還沒開始。
+- **本機（kfes）環境缺口**：① Claude in Chrome 擴充功能**未安裝**（`list_connected_browsers` 回傳空陣列），Step A 與 Step 4 都需要它；② `命題範圍三家出版商教材/翰林/` 為空，五上數學教材一份都還沒拿到；③ LibreOffice／pandoc 是否存在尚未確認，Step 5 視覺 QA 可能又要跳過。
 - **`exam-composer` 技能本體的單一真實來源已改為 repo 的 `skills/exam-composer/SKILL.md`**（2026-09-03 起）。各機器從 repo 同步到三個全域 skill 位置：Claude `~/.claude/skills/exam-composer/SKILL.md`、GPT/Codex `~/.codex/skills/exam-composer/SKILL.md`、Antigravity/Agents `~/.agents/skills/exam-composer/SKILL.md`。本機（`C:\Users\kfes`）四份 SHA-256 均為 `CA6C9C908F9A9EABC92926570D0D3BE17E90213D215C0860264D81FCC6B9368B`（2026-09-03 重建版）。⚠️ **舊機器 DESKTOP-31QBU95（`C:\Users\vm`）上的原版 SHA-256 為 `E44025BEAC7164D1209C47DDF6AD6E3C11C91AE55D5FDDF9150EC8C822FD0F43`，內容可能有重建版沒涵蓋到的細節（對話措辭、Word 排版參數、esa-exam-review 實際呼叫方式等）。**若之後回到那台，**不要直接覆蓋**，先與 repo 版逐段比對差異、擇優合併後再以 repo 為準。
 - NotebookLM 目前有 4 本任務專屬筆記本（各自獨立，不共用）：
   - 國語：`115上_六年級_國語_第一次定期評量_命題成果`，https://notebooklm.google.com/notebook/cd41d6f3-8d29-4535-b7c7-f9b56d410cf9，12 份來源（測試版，非完整考卷）。
@@ -25,14 +29,19 @@
 
 ## ➡️ 下一步
 
-1. **回舊機器 DESKTOP-31QBU95 時，取回原版 SKILL.md 與 repo 重建版逐段比對**，把原版獨有的細節合併進 repo 版，之後三處一律從 repo 同步。
-2. **Step A 新流程（Agent 接手下載）尚未實測**：下次執行命題任務、走到 Step A 時，這是首次真實驗證「使用者登入後 Agent 點擊下載按鈕」是否真的能觸發瀏覽器下載（康軒/翰林/南一三家可能各自反應不同）。驗證結果（成功/被導去登入頁/被瀏覽器攔截）務必記錄回 `agents.md`「測試發現與修正」第10點，並視結果決定要不要再調整 SKILL.md。
-3. 若要正式讓某位命題教師使用**國語**科，Step 1 需要把其餘六課也逐頁精讀（測試時只精讀了第一課「跑道」）；這與本次社會任務無關，是舊的未完成項目。
-4. 若之後修改 `exam-composer`，**先改 repo 的 `skills/exam-composer/SKILL.md` 再同步到 Claude、GPT/Codex、Antigravity/Agents 三個位置**，四份比對 SHA-256 並 commit，避免版本漂移。
+1. **裝 Claude in Chrome 擴充功能到這台（kfes）並登入**——這是 Step A 與 Step 4 的前置條件，不裝就走不下去。裝好後重跑一次 Step A，順便把 2026-08-04 改版的新流程驗證結案（目前只驗證到「Agent 能接手操作平台」，未驗證「Agent 點擊能否觸發真實下載」）。
+2. **釐清翰林 PDF 的正確入口**：2026-08-04 社會科拿到的翰林課本／習作／教師專用課本 PDF **不是**來自「行動大師3」（該平台只給 ISO 與 H5 線上閱讀）。需要使用者回想或重走一次當時的路徑，找出真正的下載入口，否則五上數學教材無法取得。若確認翰林對五年級數學就是只給線上閱讀，則改走「線上閱讀＋截圖擷取」路線（技能允許：純線上免下載電子書不強求下載）。
+3. **教材到手後續跑 Step 1~5**：注意五上數學電子書分「第一片／第二片」兩冊，第一~四單元不見得都在第一片，擷取前先確認每冊涵蓋範圍（社會科踩過「翰林按單元拆檔」的坑）。
+4. **回舊機器 DESKTOP-31QBU95 時，取回原版 SKILL.md 與 repo 重建版逐段比對**，把原版獨有的細節合併進 repo 版，之後三處一律從 repo 同步。
+5. 若要正式讓某位命題教師使用**國語**科，Step 1 需要把其餘六課也逐頁精讀（測試時只精讀了第一課「跑道」）；這是舊的未完成項目。
+6. 若之後修改 `exam-composer`，**先改 repo 的 `skills/exam-composer/SKILL.md` 再同步到 Claude、GPT/Codex、Antigravity/Agents 三個位置**，四份比對 SHA-256 並 commit，避免版本漂移。
 
 ## ⚠️ 注意事項
 
 - **Step A（出版社教材下載）2026-08-04 改版**：登入一律使用者本人完成（Agent 絕不碰密碼），登入完成後的下載點擊改由 Agent 接手，每次點擊都要比對下載資料夾確認檔案落地，失敗才請使用者補下載。舊版「全程使用者親手點擊」的說法已過期，不要再照舊版執行。
+- **翰林「行動大師3」平台不提供 PDF**（2026-09-03 實測）：「電腦版」的下載是光碟 ISO 映像檔（需掛載＋裝桌面程式），「線上版」是 H5 網頁閱讀器（彈窗開啟，直接貼網址會被擋「疑似不正常登入」）。要拿翰林 PDF 得走別的入口，入口待確認。
+- **預覽列內建瀏覽器會吃掉 `window.open`**：親師生平台的服務磁貼、翰林的「開啟」按鈕都靠彈出新視窗，在預覽列窗格中座標點擊與程式化 `el.click()` 都不會觸發，且沒有任何錯誤訊息。需要開新視窗的流程一律走 Claude in Chrome ＋真實 Chrome。
+- **親師生平台服務深連結可從 API 取得**：`GET /private/myfavorites`（帶 session cookie）回傳每個服務的 `entry_url`／`service_type`／`sso_url`，翰林是 `openid_connect` ＋ `https://moe.ntpc.edu.tw/hanlin/`、南一是 `openid_connect` ＋ `https://moe.ntpc.edu.tw/nani/`。磁貼點不動時直接導航 `sso_url` 一樣能完成 SSO，比跟磁貼 JS 互動可靠。
 - **翰林教專（教師專用課本）PDF 是按「單元」拆分，不是按「課」**：CH1=第一單元（整合該單元全部課次）、CH2=第二單元、CH3=第三單元⋯以此類推，不要看到多課次就假設每課各一個檔案，先開檔案第一頁確認範圍再下載。這次因誤判多下載了 CH3~CH5，浪費使用者三輪下載往返。
 - **esa-exam-review 的兩個版本都已修正密碼規則**（`~/.codex/skills/esa-exam-review` 與 Claude Code 外掛版），改成使用者親自登入、Agent 不碰密碼。**這兩個檔案不在本專案 git repo 裡**，若有 chezmoi 同步 `~/.codex/skills` 記得手動 `chezmoi re-add`。
 - **Step 4 查重不需要（也無法）把歷史 PDF 存進資料夾**，改用 `fetch` 轉 blob URL 並在頁面內嵌 iframe 顯示（比 `window.open` 開新分頁更穩定，新分頁容易變成瀏覽器原生下載而非預覽），直接截圖比對，不留檔案。
@@ -45,6 +54,6 @@
 - **瀏覽器連線穩定性**：本次任務中使用者中途關閉過 Chrome，導致 Claude in Chrome 擴充功能連線與登入狀態全部遺失，出現多輪「顯示登出→請重新登入→又斷線」的迴圈。**下次操作前先提醒使用者：執行 Step A / Step 4 這類需要瀏覽器登入的階段時，Chrome 視窗不要中途關閉。** 若連線意外中斷，先呼叫 `list_connected_browsers` 確認目前裝置是否還是原本那個，不要假設連線沒變。
 
 ## 🕐 最後更新
-- 時間：2026-09-03
+- 時間：2026-09-03（收工）
 - 更新者：Claude @ kfes（新電腦）
-- Git push：✅ 已推（commit `1b6b8cf`）
+- Git push：✅ 已推
