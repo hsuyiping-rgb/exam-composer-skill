@@ -216,7 +216,38 @@ Step 3 產生的所有圖檔要插入對應題號。需要學生作圖的題目�
 - 雙向細目表的表格數量正確
 - XML 內**無 `????` 亂碼**（中文編碼問題）
 
-**視覺渲染 QA**：若本機無 LibreOffice／pandoc 無法轉 PDF 確認排版，**要在 `設定摘要.md` 明確標註此限制**，並建議命題教師實際用 Word 開啟檢查排版。**不要假裝做過。**
+**視覺渲染 QA**：把三份 docx 轉成 PDF、逐頁渲染成圖檢查排版（標題、表格、題號、選項編號、圖片位置、中文有無缺字或跑版）。
+
+先確認本機有沒有 LibreOffice：
+
+```bash
+# Windows 常見位置
+ls "/c/Program Files/LibreOffice/program/soffice.com"
+```
+
+有的話用 headless 轉檔（2026-09-04 於 DESKTOP-31QBU95 實測通過，LibreOffice 26.8.0.3）：
+
+```bash
+"/c/Program Files/LibreOffice/program/soffice.com" --headless --norestore --convert-to pdf --outdir "<輸出目錄>" "<來源.docx>"
+```
+
+再用 PyMuPDF 驗證並渲染成圖檢視：
+
+```python
+import fitz
+d = fitz.open('<轉出的.pdf>')
+print(d.page_count, len(d[0].get_text()))
+d[0].get_pixmap(dpi=110).save('page1.png')
+```
+
+**兩個實測踩到的陷阱**：
+
+- **必須用 `soffice.com`，不能用 `soffice.exe`**。`.exe` 會立刻脫離回傳（0 秒、完全沒有輸出檔），看起來像失敗其實根本沒等它做完；`.com` 才會同步等待轉檔完成（一份 5 頁試卷約 12 秒）。
+- **不要用 exit code 判斷成敗**。`.com` 實測回傳 `exit=1` 但 PDF 其實已完整產出。判定成功的依據是**輸出檔存在 ＋ 頁數正確 ＋ 抽得到文字 ＋ 渲染圖目視無誤**，不是 return code。
+
+另注意 LibreOffice 的字型替換與 Word 不完全相同，渲染結果是**排版正確性的近似檢查**（足以抓出跑版、缺字、表格爆框、圖片錯位），不等於 Word 的最終呈現，仍建議命題教師實際用 Word 開一次。
+
+**若本機確實沒有 LibreOffice**（pandoc 不在這條管線上，無法替代 docx→PDF 排版檢查），**要在 `設定摘要.md` 明確標註視覺渲染 QA 未完成**，並請命題教師實際用 Word 開啟檢查排版。**不要假裝做過。**
 
 ---
 
