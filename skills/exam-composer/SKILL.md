@@ -188,7 +188,7 @@ description: 國小定期考察命題輔助技能（生成端）。協助命題�
    python <draw 技能安裝路徑>/draw.py "<圖像需求>" --name <檔名前綴> --outdir "命題成果/<學年度><學期>_<年級>_<科目>_<次別>/images"
    ```
 
-   `draw.py` 的位置依各機器安裝而定（可能在 `~/.claude/skills/draw/`、`~/.codex/skills/draw/` 或 `~/.agents/skills/draw/`），**先確認實際存在的那一份再呼叫**，不要硬寫死路徑。預設 `--quality low`，除非使用者明確要求印刷高精度才提高品質。
+   `draw.py` 的位置依各機器安裝而定（可能在 `~/.claude/skills/draw/`、`~/.codex/skills/draw/` 或 `~/.agents/skills/draw/`），**先確認實際存在的那一份再呼叫**，不要硬寫死路徑。預設 `--quality low`，除非使用者明確要求印刷高精度才提高品質。（**在 Antigravity 環境中**：可直接呼叫原生 `generate_image` 工具進行全新情境生圖，無需調用外部 `draw.py` 腳本。）
    `draw` 的提示詞要包含：**題目要測的概念、需要保留或改版的課本／習作圖示特徵、圖中標籤文字、構圖比例、不可出現答案提示的限制，以及輸出需適合黑白列印或國小試卷閱讀。**
 3. **高品質做法（2026-08-02 自然科實測成功）**：先從教材 PDF 提取原版高解析點陣圖 → 用 Pillow 局部擦除背景與舊字 → 以微軟正黑體重新疊加與試題文字 100% 吻合的 A/B/C 標記與 (甲)/(乙)/(丙) 答題框 → 插入 Word。兼顧原版美術水準與學科精準度。原始提取圖放 `extracted_images/`。
    （若本機無 matplotlib，統計圖／幾何圖可直接用 PIL 程式繪製，2026-09-04 五年級數學實測可行。）
@@ -401,9 +401,10 @@ Step 5 輸出後，教師用對話指定題號（例如「第 5、第 8 題我�
 ## 收尾約定
 
 - 任務結束前更新專案 `handoff.md`（目前做到哪／目前狀態／下一步／注意事項／最後更新）與 `agents.md`（勾選路線圖、新增測試發現）。
-- **本檔的單一真實來源是 repo 的 `skills/exam-composer/SKILL.md`。** 若要修改，**先改 repo 版再同步到三個位置並比對 SHA-256**，避免版本漂移：
+- **本檔的單一真實來源是 repo 的 `skills/exam-composer/SKILL.md`。** 若要修改，**先改 repo 版再同步到四個位置並比對 SHA-256**，避免版本漂移：
+  - `~/.gemini/config/skills/exam-composer/SKILL.md`（Antigravity 全域技能）
   - `~/.claude/skills/exam-composer/SKILL.md`
   - `~/.codex/skills/exam-composer/SKILL.md`
   - `~/.agents/skills/exam-composer/SKILL.md`
-- 換電腦時直接 clone repo 再複製到三處即可，**不需要也不應該再依賴 chezmoi 同步 exam-composer**。
+- 換電腦時直接 clone repo 再複製到各處即可，**不需要也不應該再依賴 chezmoi 同步 exam-composer**。
 - 若有 chezmoi 同步 `~/.codex/skills` 等目錄（例如 `esa-exam-review`），記得手動 `chezmoi re-add`。

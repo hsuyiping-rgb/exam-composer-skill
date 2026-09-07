@@ -32,6 +32,9 @@
 - [x] 2026-09-07：**五年級數學任務 Step 4 查重完成並結案**——108~114 共 7 個學年度逐份實際開啟比對，判定 10 題接近原題重複並全數重寫、通過第二輪查重；Step 5 三份 Word 同步更新（見第 16 點）
 - [x] 2026-09-07：**Step 4 實戰經驗回寫進 SKILL.md**（337→409 行）——新增 Step 3「撰寫前先避開歷屆高頻命題框架」對照表、Step 4 四級判定與重寫三條硬約束、ESA 操作要點、Step 5 .docx 就地編輯法、環境需求章節；四份 SHA-256 對齊為 `371CD35F…B61B55CB`
 - [x] 2026-09-07：**115上_五年級_數學_第一次定期考察 全案結案並經使用者確認驗收**（DESKTOP-31QBU95）——補寫 L3 Obsidian 筆記、補做 Step 5 視覺渲染 QA（LibreOffice 轉 PDF 逐頁檢視三份 Word 皆通過）、刪除 Step 4 前備份、完成功能六 NotebookLM 歸檔（筆記本 `3c7df9ba-71cf-4d12-b6a1-84b7272c6479`，47 份來源）；同步更正 handoff.md「三台都沒有 LibreOffice」的錯誤敘述（見第 18 點）
+- [x] 2026-09-07：**`exam-composer` 轉換為 Antigravity 全域技能並完成五處 SHA-256 對齊**——適配 Antigravity 原生生圖（`generate_image`）、PowerShell 指令、LibreOffice 轉檔與完整命題流程，安裝至 `C:\Users\vm\.gemini\config\skills\exam-composer\SKILL.md`；同步更新 repo 與本機 Claude、Codex、Agents 三處技能複本，五份 SHA-256 對齊為 `B7D1549BCA4DDC0C488C0AC967147ED92E850E721539D3B00CC3922DA5FC0AD8`
+- [x] 2026-09-07：**115上_二年級_國語_第一次定期考察 命題完成並產出 Word 卷與 QA 通過**（Antigravity）——依光復選用表取得康軒二上教材 4 包整冊 ZIP（87 個 PDF），精讀查字典與第 1～6 課（96 生字與課綱代碼），依 100 分細目骨架全新命製 57 計分項試題；生成 2 幅手繪素養插圖；依指示先跳過查重；Step 5 產出三份 Word（正式試題卷、教師解答卷、雙向細目表）及 PDF，通過結構性與 LibreOffice 視覺渲染雙重 QA
+- [x] 2026-09-07：**115上_五年級_國語_第一次定期考察 Step 0～Step 5 全流程完成**（DESKTOP-31QBU95）——Step 3 撰寫 38 小題／100 分（非選 46 分，依命題教師要求提高非選比重）；Step 4 查重 108～114 共 7 個學年度**全數取得並實際判讀**（109-1 為 OLE2 二進位 `.doc`，改以 UTF-16LE 在瀏覽器內解析出全文與答案，無缺口），判定 ★6／▲8／△10／－14，經命題教師決議只改寫 ★ 6 題並通過第二輪查重；Step 5 產出三份 Word 並完成結構性 QA 與 LibreOffice 視覺渲染 QA。**本次查到的五上國語高頻命題框架已寫入 `查重報告.md` 第二節**（短文挖空寫國字、改錯字、成語代碼填空、選擇題大題四種慣用大題，及動畫大師／運動員／齊柏林／凱瑟琳四類高頻題材）
 - [ ] 未來每個年段／科目任務，把該次查到的高頻命題框架回寫進 SKILL.md 的對照表（目前僅有五上數學實證資料）
 
 ## 測試發現與修正（2026-08-02，用真實資料端到端測試 Step 0～Step 4）
@@ -155,5 +158,5 @@
 - 涉及出版社/校務系統帳密的操作：Agent 不得親自輸入使用者密碼（含透過腳本以環境變數方式提交登入表單），需由使用者本人在自己的瀏覽器完成登入，Agent 僅能讀取既有登入狀態或使用使用者提供的已授權深連結
 - 命題生成流程（Step 1-5）必須完整執行，不能自行判斷跳過任何步驟；遇到不確定的狀況要暫停詢問使用者，不能自己猜答案繼續做
 - 涉及 NotebookLM 等需要 OAuth 授權登入的服務：Agent 不得代使用者完成登入/授權流程，未連接時要詢問使用者是否要連接建立，或放棄該動作
-- **技能本體的單一真實來源是 repo 的 `skills/exam-composer/SKILL.md`**；各機器從這裡同步到 `~/.claude/skills/`、`~/.codex/skills/`、`~/.agents/skills/` 三處，修改後必須四份 SHA-256 一致並 commit，不可只改本機
+- **技能本體的單一真實來源是 repo 的 `skills/exam-composer/SKILL.md`**；各機器從這裡同步到 `~/.gemini/config/skills/`（Antigravity 全域技能）、`~/.claude/skills/`、`~/.codex/skills/`、`~/.agents/skills/` 各處，修改後必須五份 SHA-256 一致並 commit，不可只改本機
 - 本技能定位為「生成端」，與 `esa-exam-review`（校長使用的「審查端」，位於 `~/.codex/skills/esa-exam-review` 與 Claude Code 外掛 `anthropic-skills:esa-exam-review`）分工合作、不重疊
