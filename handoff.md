@@ -53,6 +53,12 @@
 - **NotebookLM 規則**：每次任務建立單獨 Notebook，不沿用舊的；避免呼叫 `label list`。
 - **`exam-composer` 若要修改**：先改 repo 的 `skills/exam-composer/SKILL.md`，再同步到 `~/.claude`／`~/.codex`／`~/.agents` 三處，四份比對 SHA-256 後 commit。
 
+## 📎 本次收工的層級狀態
+
+- ✅ L1 本地：agents.md（新增測試發現第 16 點）、handoff.md 已更新
+- ✅ L2 GitHub：已 commit + push
+- ⚠️ **L3 Obsidian 未更新**：本機（DESKTOP-HJA3024）**沒有 Obsidian MCP**，無法寫入 `定期考察命題技能/專案工作流程.md`。本次的詳細決策脈絡（為何只改 ★ 10 題、▲ 的取捨理由、ESA 操作踩坑細節）已完整寫進 `agents.md` 測試發現第 16 點與任務資料夾的 `查重報告.md`，**回到有 Obsidian 的電腦時請補寫 L3 筆記**。
+
 ## 🕐 最後更新
 - 時間：2026-09-07（收工）
 - 更新者：Claude @ DESKTOP-HJA3024
