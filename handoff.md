@@ -4,58 +4,56 @@
 
 ## ⏯️ 目前做到哪
 
-2026-08-04 已完成第四份正式命題成果：`命題成果/115上_六年級_社會_第一次定期考察/`。範圍為翰林版六年級社會 115上第一~二單元（消費選擇與理財規劃、戰後經濟轉型與生活轉變），5課全數逐頁精讀，題型配分為選擇40、是非20、填充10、素養題組30，Bloom 比例為記憶20%、理解30%、應用30%、分析10%、評鑑與創造10%。已完成 Step 0~5：教材下載歸檔、教材內容擷取、雙向細目表骨架、20+10+5+2組共37計分項試題草稿、108~114 共7學年度 ESA 逐份查重、正式 Word 試題卷、教師解答卷、雙向細目表，並整理進獨立 NotebookLM 筆記本。
+2026-09-07 在**第三台電腦** `DESKTOP-HJA3024`（`C:\Users\user`）開工。做了三件事：
 
-同一次對話中，使用者事後要求修正 `exam-composer` 技能的 Step A：教材下載流程從「登入＋下載全部由使用者親手做」改為「登入由使用者做，登入完成後下載由 Agent 接手點擊並驗證」。已修改並同步三處全域 SKILL.md。**這個新流程尚未經過真實下載動作驗證**（本次社會任務的教材下載仍是照舊流程跑完的，SKILL.md 是任務結束後才改的）。
+1. **補環境**：這台原本三處全域 skills 目錄都沒有 `exam-composer`，已從 repo `skills/exam-composer/SKILL.md` 複製到 `~/.claude`／`~/.codex`／`~/.agents`，四份 SHA-256 均為 `63634399BDEAAE1A0019814517D8F943F48D8D506B519B71FF3CA708E786BB92`。
+2. **推上次未推的 commit**：9/4 有兩個 commit（`370ee58` SKILL.md 兩版合併、`ef2cd68` Step 5 LibreOffice 說明）留在本地沒推，已補推。上一份 handoff 寫「Git push ✅」其實只涵蓋到 `eb22685`。
+3. **五年級數學任務 Step 4 查重完成並結案**（本次主要工作，見下）。
 
-2026-09-03 換到新電腦（`C:\Users\kfes`）開工，發現 `exam-composer` 技能本體在這台完全找不到（三處 skills 目錄、GDrive 全碟、Downloads/Documents/Desktop/OneDrive/chezmoi、repo 全歷史、GitHub 遠端皆無副本）。確認技能檔從未進版控、原版只在舊機器 DESKTOP-31QBU95。已依 `agents.md` 的功能設計總覽與 11 點測試發現**重建一份 SKILL.md**（236 行），安裝到本機 `~/.claude`、`~/.codex`、`~/.agents` 三處（SHA-256 皆為 `CA6C9C90…6B9368B`），並 commit 進 repo `skills/exam-composer/SKILL.md`（commit `1b6b8cf`，已 push）。技能本體自此改以 repo 為單一真實來源。
+**Step 4 查重結果**：108-1~114-1 共 7 個學年度全數取得，**逐份實際開啟、逐頁截圖判讀**。27 題中 18 題與歷屆相似——★ 接近原題重複 10 題、▲ 命題框架高度相似 8 題、△ 部分相似 9 題，**沒有一題是「未發現相似」**。經命題教師確認，採「只改 ★ 的 10 題，改寫時換命題角度而非只換數字」。第 2、3、4、6、7、8、16、19、21、23 題全數重寫，並再與 7 份逐題比對一次（第二輪查重）全部通過。
 
-同一天稍晚，開始新任務 **115上_五年級_數學_第一次定期考察（翰林版、第一~四單元）**。Step 0 已完成並存檔 `設定摘要.md`（題型：選擇20／填充15／計算30／應用25／素養10；Bloom：記憶20／理解30／應用30／分析10／評鑑創造10，兩者合計均為100）。**Step A 受阻，教材尚未取得**：新電腦沒裝 Claude in Chrome 擴充功能，改用預覽列內建瀏覽器；使用者本人完成親師生平台登入後，Agent 成功接手導航並以 SSO 進入翰林「行動大師3」，但翰林只提供光碟 ISO 與 H5 線上閱讀、**不提供 PDF**，且預覽列瀏覽器會吃掉彈出新視窗，兩條路都走不通。詳見 `agents.md` 測試發現第 13 點。
-
-2026-09-04 **Step A 新流程實測成功結案**。翰林 PDF 的真正入口是 `edisc3.hle.com.tw` 左側選單「**教材資源／PPT**」（頁面 `gwty_v2023.html`）→ 備課教材；前一日誤判「翰林不提供 PDF」是因為預覽列視窗太窄、RWD 把左側選單收合了，已更正 `agents.md` 第 13 點。在裝好 Claude in Chrome 的真實 Chrome 上，「使用者登入 → Agent 接手點擊下載 → 逐檔驗證落地」全流程驗證通過，取得翰林五上數學 **31 個 PDF、約 337MB**。接著 **115上_五年級_數學_第一次定期考察 已完成 Step 0～Step 3**：Step 1 教材擷取（四單元課綱雙代碼、教學目標、學生迷思、評量建議）、Step 2 雙向細目表骨架（27 計分項，題型與 Bloom 橫縱皆整除，經教師確認）、Step 3 逐題撰寫（27 題全數通過試題檢核清單，素養題組附評分規準，並產出 7 幅程式繪製圖）。另做了可切換顯示答案的試卷預覽頁：https://claude.ai/code/artifact/2352b1ae-fe78-4b31-9a9c-9ba4a5aac0b8
+**同步更新的產出**：`查重報告.md`（新建）、`試題草稿.md`（10 題改寫＋逐題附改寫紀錄）、`正式試題卷.docx`／`教師解答卷.docx`（以 python-docx 就地編輯，保留原排版）、第 19 題圖重繪為 `images/q19_平行四邊形內角.png`（原不規則四邊形圖已刪）、`設定摘要.md` 流程狀態回填。**`雙向細目表.docx` 無須修改**——10 題改寫全部守住原題型／Bloom／單元格位。
 
 ## 🚦 目前狀態
 
-- 技能本體（Step 0~5、功能五、功能六）已用四個科目（國語測試版、數學、自然、社會）端到端驗證過，社會這次是首次把 Step 4 查重完整跑滿 108~114 全部 7 個學年度。
-- **進行中任務：`命題成果/115上_五年級_數學_第一次定期考察/`**，已完成 Step 0～Step 3，產出 `設定摘要.md`／`教材下載清單.md`／`教材內容擷取.md`／`雙向細目表骨架草案.md`／`試題草稿.md`／`images/`（7 幅圖）。**下一步是 Step 4 查重**（需使用者登入 ESA）。
-- **本機（kfes）環境現況**：Claude in Chrome 擴充功能**已安裝並可用**（注意：要把側邊面板打開才會建立連線）；翰林五上數學教材已齊；**LibreOffice／pandoc 仍未確認**，Step 5 視覺渲染 QA 可能又要跳過。另本機**無 matplotlib**，圖表以 PIL 繪製；`pdftotext` 與 PyMuPDF、pypdf、PIL 皆可用。
-- **`exam-composer` 技能本體的單一真實來源已改為 repo 的 `skills/exam-composer/SKILL.md`**（2026-09-03 起）。各機器從 repo 同步到三個全域 skill 位置：Claude `~/.claude/skills/exam-composer/SKILL.md`、GPT/Codex `~/.codex/skills/exam-composer/SKILL.md`、Antigravity/Agents `~/.agents/skills/exam-composer/SKILL.md`。本機（`C:\Users\kfes`）四份 SHA-256 均為 `CA6C9C908F9A9EABC92926570D0D3BE17E90213D215C0860264D81FCC6B9368B`（2026-09-03 重建版）。⚠️ **舊機器 DESKTOP-31QBU95（`C:\Users\vm`）上的原版 SHA-256 為 `E44025BEAC7164D1209C47DDF6AD6E3C11C91AE55D5FDDF9150EC8C822FD0F43`，內容可能有重建版沒涵蓋到的細節（對話措辭、Word 排版參數、esa-exam-review 實際呼叫方式等）。**若之後回到那台，**不要直接覆蓋**，先與 repo 版逐段比對差異、擇優合併後再以 repo 為準。
-- NotebookLM 目前有 4 本任務專屬筆記本（各自獨立，不共用）：
-  - 國語：`115上_六年級_國語_第一次定期評量_命題成果`，https://notebooklm.google.com/notebook/cd41d6f3-8d29-4535-b7c7-f9b56d410cf9，12 份來源（測試版，非完整考卷）。
-  - 數學：`115上_六年級_數學_第一次定期考察_命題成果`，https://notebooklm.google.com/notebook/fd63de1d-c331-4029-b162-bdd26e68a954，30 份來源。
-  - 自然：`115上_六年級_自然_第一次定期考察_命題成果`，https://notebooklm.google.com/notebook/3c1456d7-2dc7-450f-b16d-4e4f67e0455c，20 份來源。
-  - 社會：`115上_六年級_社會_第一次定期考察_命題成果`，https://notebooklm.google.com/notebook/44985994-8bd2-4801-8707-4b97699b07a3，22 份來源。
-- `命題範圍三家出版商教材/翰林/115上_六年級_社會/` 有本次正式命題用翰林教材：課本PDF 2份（L01/L02，對應第一/二單元）、習作PDF 2份（學生版/教用版）、教師專用課本PDF 4份（第1本CH1/CH2、第1本/第2本素養題），另外多下載了教專第2本CH3/CH4/CH5（第三、四單元，本次用不到，已在教材下載清單.md標註為誤下載，未刪除、留存供未來命題三四單元時使用）。
-- `命題成果/115上_六年級_社會_第一次定期考察/` 有本次正式成果：`正式試題卷.docx`、`教師解答卷.docx`、`雙向細目表.docx`、`查重報告.md`、`試題草稿.md`、`教材內容擷取.md`、`教材下載清單.md`、`設定摘要.md`、`雙向細目表骨架草案.md`。
-- `光復108課綱歷年定期試題/` 資料夾維持空的，這是正常狀態（Step 4 改用即時截圖比對，不存檔）。
+- **`命題成果/115上_五年級_數學_第一次定期考察/` 已完成 Step 0～Step 5**，只剩**功能六 NotebookLM 歸檔**未做。
+- ⚠️ **接手前必知**：`命題成果/` 在 `.gitignore` 內（校內試卷不進版控），所以**本次所有命題產出都不在 GitHub 上，只存在 GDrive**。換電腦接手時靠 GDrive 同步，不要以為 clone repo 就會有。
+- ⚠️ **視覺渲染 QA 仍未完成**：DESKTOP-31QBU95、kfes、DESKTOP-HJA3024 **三台電腦都沒有 LibreOffice**。已改用 python-docx 做結構性 QA 並通過（10 個選擇題空白括號、7 幅圖齊備、答案列正確、無亂碼），但排版需請命題教師用 Word 實際開啟確認，特別是第 22 題作圖區與新的第 19 題平行四邊形圖。
+- **Step 4 前的備份**留在任務資料夾：`試題草稿_Step4前備份.md`、`正式試題卷_Step4前備份.docx`、`教師解答卷_Step4前備份.docx`。確認新版無誤後可刪。
+- **技能本體單一真實來源仍是 repo 的 `skills/exam-composer/SKILL.md`**，換電腦一律從這裡同步到三處全域目錄。
+- NotebookLM 目前有 4 本任務專屬筆記本（六年級國語／數學／自然／社會），五年級數學這本**尚未建立**。
+- `光復108課綱歷年定期試題/` 維持空的，這是正常狀態（Step 4 用即時 blob 讀取，不存檔）。
 
 ## ➡️ 下一步
 
-1. **Step 4 歷屆試題查重**：把 `試題草稿.md` 的 27 題送 `esa-exam-review`，比對 108~114 共 7 個學年度、五年級數學第一次定期考察的歷屆試題，**逐份實際開啟比對**（非只看清單）。重複或命題框架過近者只重寫該格，重寫後再查重直到全過，產出 `查重報告.md`。**需使用者本人登入 esa.ntpc.edu.tw**，Agent 不碰帳密；操作前先確認 Chrome 側邊面板已開啟、全程不要關閉視窗。
-2. **Step 5 格式化輸出**：產出 `正式試題卷.docx`（不含答案，**第 22 題需留作圖區**）、`教師解答卷.docx`、`雙向細目表.docx`（套光復國小範本）。7 幅圖需插入 Word。輸出後做 DOCX 結構性 QA；先確認本機有無 LibreOffice／pandoc，若無則於 `設定摘要.md` 標註視覺渲染 QA 未完成。
-3. **功能六 NotebookLM 歸檔**：建立獨立筆記本 `115上_五年級_數學_第一次定期考察_命題成果`，加入本次教材、試卷、解答、細目表、查重報告與通用參考資料。避免呼叫 `label list`。
-4. **回舊機器 DESKTOP-31QBU95 時，取回原版 SKILL.md 與 repo 重建版逐段比對**，把原版獨有的細節合併進 repo 版。
-5. 若要正式讓某位命題教師使用**國語**科，Step 1 需要把其餘六課也逐頁精讀（舊的未完成項目）。
-6. 若之後修改 `exam-composer`，**先改 repo 的 `skills/exam-composer/SKILL.md` 再同步到三處**，四份比對 SHA-256 並 commit。
+1. **功能六 NotebookLM 歸檔**：建立獨立筆記本 `115上_五年級_數學_第一次定期考察_命題成果`，加入本次教材、正式試題卷、教師解答卷、雙向細目表、查重報告與通用參考資料。**避免呼叫 `label list`**（會觸發 NotebookLM 自動分類副作用）。
+2. **把本次 Step 4 的三條經驗寫進 `skills/exam-composer/SKILL.md`**（改 repo 版再同步三處、比對 SHA-256 後 commit）：
+   - Step 3 撰寫時就預先避開光復高頻命題框架（見 `agents.md` 測試發現第 16 點清單），不要等 Step 4 才大量重寫；
+   - Step 4 的 ▲ 類判準明文化為「★ 必改、▲ 由命題教師決定並在報告中逐題記錄」；
+   - Step 4 重寫的硬約束：**必須守住原題型／Bloom／單元格位**，如此雙向細目表無須重做。
+3. **把 ESA 操作要點補進 SKILL.md 或 esa-exam-review**（完整版在 `查重報告.md` 第七節）：div-based 版面、POST 一次取整年清單、`no` 屬性藏檔名、**不可直接導航模組 JSP（會作廢 session）**、`.doc` 年度改讀解答卷。
+4. 若要正式讓某位命題教師使用**國語**科，Step 1 需把其餘六課也逐頁精讀（舊的未完成項目）。
+5. 考慮在常用電腦安裝 LibreOffice，否則 Step 5 視覺渲染 QA 永遠做不了。
 
 ## ⚠️ 注意事項
 
-- **Step A（出版社教材下載）2026-08-04 改版**：登入一律使用者本人完成（Agent 絕不碰密碼），登入完成後的下載點擊改由 Agent 接手，每次點擊都要比對下載資料夾確認檔案落地，失敗才請使用者補下載。舊版「全程使用者親手點擊」的說法已過期，不要再照舊版執行。
-- **翰林「行動大師3」平台不提供 PDF**（2026-09-03 實測）：「電腦版」的下載是光碟 ISO 映像檔（需掛載＋裝桌面程式），「線上版」是 H5 網頁閱讀器（彈窗開啟，直接貼網址會被擋「疑似不正常登入」）。要拿翰林 PDF 得走別的入口，入口待確認。
-- **預覽列內建瀏覽器會吃掉 `window.open`**：需要開新視窗的流程一律走 Claude in Chrome ＋真實 Chrome，不要用預覽列硬闖。
-- **親師生平台服務深連結可從 API 取得**：`GET /private/myfavorites`（帶 session cookie）回傳每個服務的 `entry_url`／`service_type`／`sso_url`，翰林是 `openid_connect` ＋ `https://moe.ntpc.edu.tw/hanlin/`、南一是 `openid_connect` ＋ `https://moe.ntpc.edu.tw/nani/`。磁貼點不動時直接導航 `sso_url` 一樣能完成 SSO，比跟磁貼 JS 互動可靠。
-- **翰林教專（教師專用課本）PDF 是按「單元」拆分，不是按「課」**：CH1=第一單元（整合該單元全部課次）、CH2=第二單元、CH3=第三單元⋯以此類推，不要看到多課次就假設每課各一個檔案，先開檔案第一頁確認範圍再下載。這次因誤判多下載了 CH3~CH5，浪費使用者三輪下載往返。
-- **esa-exam-review 的兩個版本都已修正密碼規則**（`~/.codex/skills/esa-exam-review` 與 Claude Code 外掛版），改成使用者親自登入、Agent 不碰密碼。**這兩個檔案不在本專案 git repo 裡**，若有 chezmoi 同步 `~/.codex/skills` 記得手動 `chezmoi re-add`。
-- **Step 4 查重不需要（也無法）把歷史 PDF 存進資料夾**，改用 `fetch` 轉 blob URL 並在頁面內嵌 iframe 顯示（比 `window.open` 開新分頁更穩定，新分頁容易變成瀏覽器原生下載而非預覽），直接截圖比對，不留檔案。
-- **Node.js 寫入 GDrive 路徑檔案時，字串路徑組合的錯誤不會拋出例外**：一律用 `path.join()`，不要用字串相加＋反斜線。
-- **NotebookLM 整合規則**：每次任務建立單獨 Notebook，不沿用舊的共用筆記本；通用參考資料與本次教材/成果都加入該任務專屬筆記本。`label list` 應避免，因它曾觸發 AI 自動分類副作用。
-- **題目圖像規則**：Step 3 逐題撰寫時若題目文字需要圖像輔助，需依課本/習作/教師手冊圖示作為構圖與學科精準度參考；需要全新或改版圖像時召喚全域 `draw` 技能，輸出到該次 `命題成果/.../images/`。本次社會命題經評估後判定不需要圖像（全用文字表格呈現素養題情境），詳見 `試題草稿.md` 的「圖像需求評估」段落。
-- **`exam-composer` 技能檔已納入本 repo 版控（`skills/exam-composer/SKILL.md`，2026-09-03 commit `1b6b8cf`）**，這是單一真實來源；`~/.claude/skills/`、`~/.codex/skills/`、`~/.agents/skills/` 三處都是它的複本。換電腦時直接 clone repo 再複製到三處即可，**不需要也不應該再依賴 chezmoi 同步 exam-composer**（chezmoi 目前只管 `dot_codex/skills/shutdown-sync`，從未管過 exam-composer——這正是這次找不到技能的原因）。
-- **本次社會命題已完成 DOCX 結構性 QA**：學生卷選擇20+是非10共30個空白括號且不含答案、教師卷20個選擇答案+10個是非答案（○/×各5）+5個填充答案+7段素養題參考答案皆已填入、雙向細目表含3個表格、DOCX XML 無 `????` 亂碼。視覺渲染 QA 未完成：本機無 LibreOffice/pandoc，無法轉 PDF 做排版確認，已在 `設定摘要.md` 標註此限制，建議教師實際用 Word 開啟檢查。
-- **本次 ESA 查重涵蓋 108~114 全部七個學年度**，逐份實際開啟比對（不是只看清單），發現113-1一題命題框架相近已改寫，詳見 `查重報告.md`。
-- **瀏覽器連線穩定性**：本次任務中使用者中途關閉過 Chrome，導致 Claude in Chrome 擴充功能連線與登入狀態全部遺失，出現多輪「顯示登出→請重新登入→又斷線」的迴圈。**下次操作前先提醒使用者：執行 Step A / Step 4 這類需要瀏覽器登入的階段時，Chrome 視窗不要中途關閉。** 若連線意外中斷，先呼叫 `list_connected_browsers` 確認目前裝置是否還是原本那個，不要假設連線沒變。
+- **🆕 ESA 操作：登入後只用 `fetch` 取資料，絕對不要導航到模組 JSP 網址**（`/jsp/c_exammgt/index.jsp?pid=0261`）。繞過入口框架會讓伺服器回 `index_error.jsp?err=7` 並**作廢整個 session**，必須請使用者重新登入。本次即因此中斷一次。
+- **🆕 ESA 試卷清單是 div-based**（`div.row` ＋ `div.column`，不是 `table/tr`）；`POST /jsp/c_exammgt/ExamMgtAction.do` 帶 `method=examMain&mod=examMain&selseyear=<代碼，如 1141>` 可一次取回整個學年期清單；PDF 檔名在 `div[id^=row2_itmfile_]`／`div[id^=row2_ansfile_]` 的 `no` 屬性，下載路徑 `/central/014796/upfile/exammgt/<檔名>`。
+- **🆕 部分年度試卷檔是 `.doc`**（本次 110-1），瀏覽器無法渲染，**改讀解答卷 PDF**（掃描版含完整題目）即可正常比對。
+- **🆕 瀏覽器工具執行 JS 時，回傳值不要含長檔名或編碼字串**，會被防資料外洩機制擋下（回 `BLOCKED: Cookie/query string data`）。把檔名留在頁面變數內，只回傳狀態碼、大小等短資訊。
+- **🆕 修改既有 `.docx` 優先用 python-docx 就地編輯**，不要整份重生：可改段落文字、替換圖片 blob 與 `a:ext`／`wp:extent` 尺寸，完整保留原排版。本機無 Node `docx` 套件，但有 python-docx 1.2.0。
+- **🆕 用 Bash heredoc 寫含 Windows 路徑的 Python 時，字串要用 raw（`r"""`）**，否則 `C:\Users` 的 `\U` 會被當成 unicode escape 而語法錯誤。
+- **Chrome 側邊面板要打開才會建立 Claude in Chrome 連線**；執行 Step A／Step 4 這類需要登入的階段，Chrome 視窗全程不要關閉。若連線意外中斷，先呼叫 `list_connected_browsers` 確認裝置是否還是原本那個。
+- **Agent 絕不輸入帳號密碼**：ESA 與親師生平台登入一律由使用者本人完成，Agent 只等待。
+- **Step A（教材下載）**：登入由使用者做，登入後的下載點擊由 Agent 接手並逐檔驗證落地。翰林 PDF 入口在 `edisc3.hle.com.tw` 左側選單「**教材資源／PPT**」（頁面 `gwty_v2023.html`）。Chrome 會靜默封鎖同站第 2 個以後的自動下載，優先用網站的「勾選＋下載已勾選項目」打包成單一 ZIP。
+- **翰林教材拆檔邏輯依科目而異**：數學按「課」拆（L01~L10），社會教專按「單元」包裹（CH1=單元1）。一律先下載目次確認，不要憑檔名猜。
+- **Step 4 不需要也無法把歷史 PDF 存進資料夾**：用 `fetch` 轉 blob URL ＋頁面內嵌 iframe 顯示，截圖比對，不留檔案。**不要點擊 PDF 內容區**（會造成 tab 凍結），只用 scroll ＋ zoom。
+- **Node.js 寫入 GDrive 路徑檔案時一律用 `path.join()`**，不要字串相加＋反斜線（錯誤不會拋例外，極難排查）。
+- **題目圖像規則**：需要新圖或改版圖時召喚全域 `draw` 技能，輸出到該次 `命題成果/.../images/`；本次第 19 題圖為 PIL 程式繪製（幾何圖精度需求高，程式繪圖比生圖可靠）。
+- **NotebookLM 規則**：每次任務建立單獨 Notebook，不沿用舊的；避免呼叫 `label list`。
+- **`exam-composer` 若要修改**：先改 repo 的 `skills/exam-composer/SKILL.md`，再同步到 `~/.claude`／`~/.codex`／`~/.agents` 三處，四份比對 SHA-256 後 commit。
 
 ## 🕐 最後更新
-- 時間：2026-09-04（收工）
-- 更新者：Claude @ kfes
-- Git push：✅ 已推
+- 時間：2026-09-07（收工）
+- 更新者：Claude @ DESKTOP-HJA3024
+- Git push：待推

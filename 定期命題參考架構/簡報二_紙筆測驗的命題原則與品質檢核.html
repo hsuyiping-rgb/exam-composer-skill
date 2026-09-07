@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>紙筆測驗的命題原則與品質檢核</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f8fafc;
+      --navy-dark: #0f172a;
+      --navy-primary: #1e3a8a;
+      --navy-light: #1e40af;
+      --blue-accent: #3b82f6;
+      --blue-soft: #eff6ff;
+      --gold-accent: #d97706;
+      --gold-light: #fef3c7;
+      --slate-dark: #334155;
+      --slate-muted: #64748b;
+      --border-color: #e2e8f0;
+      --card-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.08), 0 8px 10px -6px rgba(30, 58, 138, 0.04);
+      --font-family: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #020617;
+      color: var(--slate-dark);
+      font-family: var(--font-family);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #presentation-container {
+      width: 100vw;
+      height: 56.25vw; /* 16:9 Aspect Ratio */
+      max-height: 100vh;
+      max-width: 177.78vh; /* 16:9 Aspect Ratio */
+      background-color: var(--bg-main);
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Bar Header */
+    .deck-header {
+      height: 52px;
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      z-index: 10;
+    }
+
+    .deck-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .deck-badge {
+      background: var(--navy-primary);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-counter {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--slate-muted);
+    }
+
+    .btn-icon {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--slate-dark);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: var(--blue-soft);
+      color: var(--navy-primary);
+      border-color: var(--blue-accent);
+    }
+
+    /* Main Slide Container */
+    .slides-wrapper {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform: translateX(30px);
+      padding: 40px 60px;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-main);
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Slide Header Components */
+    .slide-tag {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold-accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .slide-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      margin-bottom: 24px;
+      line-height: 1.3;
+    }
+
+    /* Content Layout Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 20px;
+      flex: 1;
+    }
+
+    .grid-1-2 {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 28px;
+      flex: 1;
+    }
+
+    /* Common Card Styling */
+    .card {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card-accent {
+      border-top: 4px solid var(--navy-primary);
+    }
+
+    .card-gold {
+      border-top: 4px solid var(--gold-accent);
+    }
+
+    .card-blue {
+      border-top: 4px solid var(--blue-accent);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-text {
+      font-size: 15px;
+      color: var(--slate-dark);
+      line-height: 1.6;
+    }
+
+    /* Highlight Boxes */
+    .highlight-box {
+      background: var(--blue-soft);
+      border-left: 4px solid var(--blue-accent);
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--navy-primary);
+      font-weight: 500;
+    }
+
+    .highlight-gold-box {
+      background: var(--gold-light);
+      border-left: 4px solid var(--gold-accent);
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 12px;
+      font-size: 14px;
+      color: #78350f;
+      font-weight: 600;
+    }
+
+    /* List Styling */
+    ul.styled-list {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    ul.styled-list li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--slate-dark);
+    }
+
+    ul.styled-list li::before {
+      content: "•";
+      position: absolute;
+      left: 6px;
+      color: var(--blue-accent);
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    /* Table Styling */
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .styled-table th {
+      background: var(--navy-primary);
+      color: white;
+      font-weight: 700;
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 13.5px;
+    }
+
+    .styled-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 13.5px;
+      color: var(--slate-dark);
+    }
+
+    .styled-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .styled-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    /* Title Slide Specifics */
+    .title-slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+      margin: -40px -60px;
+      padding: 80px 100px;
+      color: white;
+    }
+
+    .title-slide-tag {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid #f59e0b;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .title-slide-h1 {
+      font-size: 44px;
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    .title-slide-subtitle {
+      font-size: 22px;
+      color: #94a3b8;
+      margin-bottom: 40px;
+      font-weight: 400;
+    }
+
+    .title-slide-meta {
+      display: flex;
+      gap: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 24px;
+      width: 100%;
+    }
+
+    .meta-item {
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    .meta-item strong {
+      color: #ffffff;
+    }
+
+    /* Quote Box */
+    .quote-box {
+      background: white;
+      border-left: 6px solid var(--navy-primary);
+      padding: 20px 24px;
+      border-radius: 0 8px 8px 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--navy-dark);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+    }
+
+    /* Bottom Control Bar */
+    .deck-footer {
+      height: 48px;
+      background: white;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      z-index: 10;
+    }
+
+    .progress-bar-container {
+      flex: 1;
+      height: 6px;
+      background: var(--border-color);
+      border-radius: 3px;
+      margin: 0 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--navy-primary), var(--blue-accent));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .nav-btn {
+      background: var(--navy-primary);
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: var(--navy-light);
+    }
+
+    .nav-btn:disabled {
+      background: var(--border-color);
+      color: var(--slate-muted);
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="presentation-container">
+    <!-- Header -->
+    <div class="deck-header">
+      <div class="deck-title">
+        <span class="deck-badge">簡報二</span>
+        紙筆測驗的命題原則與品質檢核
+      </div>
+      <div class="header-controls">
+        <span class="slide-counter" id="slide-counter">Slide 1 / 18</span>
+        <button class="btn-icon" onclick="toggleFullscreen()">全螢幕 ⛶</button>
+      </div>
+    </div>
+
+    <!-- Slides Wrapper -->
+    <div class="slides-wrapper">
+
+      <!-- Slide 1: Title Slide -->
+      <div class="slide active">
+        <div class="title-slide-content">
+          <div class="title-slide-tag">定期考察命題技能・專題簡報</div>
+          <h1 class="title-slide-h1">紙筆測驗的命題原則<br>與試題品質檢核指南</h1>
+          <div class="title-slide-subtitle">成就測驗規範、雙向細目表、心理計量指標與題型審查</div>
+          <div class="title-slide-meta">
+            <div class="meta-item">主講人：<strong>許以平</strong></div>
+            <div class="meta-item">適用對象：<strong>命題教師、領域召集人與校務審題教師</strong></div>
+            <div class="meta-item">視覺風格：<strong>現代簡約・專業學術風</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2: 教師專業體現 -->
+      <div class="slide">
+        <span class="slide-tag">一、命題定位</span>
+        <h2 class="slide-title">紙筆測驗命題水準是教師專業的體現</h2>
+        <div class="quote-box">
+          「紙筆測驗的命題技巧固然重要，但決定教師是否能飛簷走壁的功夫，卻是教師的<strong>學科教學知識 (Pedagogical Content Knowledge, PCK)</strong>。」
+        </div>
+        <div class="grid-2">
+          <div class="card card-accent">
+            <div class="card-title">💡 為什麼命題代表教師專業？</div>
+            <ul class="styled-list">
+              <li><strong>檢視教學與學習落差</strong>：題目反映教師認為「什麼是核心重點」。</li>
+              <li><strong>促進診斷與補救</strong>：良好的題目能準確診斷學生學習迷思。</li>
+              <li><strong>引導課堂學習行為</strong>：學生會根據評量方式調整閱讀與思考習慣。</li>
+            </ul>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">⚠️ 避免命題常見誤區</div>
+            <ul class="styled-list">
+              <li>避免直接取用出版社題庫，導致安親班撞題失去評量信度。</li>
+              <li>避免為了難倒學生而偏離課程學習重點。</li>
+              <li>避免格式錯誤與無效干擾選項。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: 評量四大目的 -->
+      <div class="slide">
+        <span class="slide-tag">一、命題定位</span>
+        <h2 class="slide-title">評量的四大目的與應用時機</h2>
+        <div class="grid-4">
+          <div class="card card-accent">
+            <div class="card-title" style="font-size:16px;">1. 安置性評量</div>
+            <p class="card-text" style="font-size:13.5px;">
+              <strong>Timing</strong>: 教學開始前<br>
+              <strong>Goal</strong>: 評估學生學習起點行為，作為編班或教學起點依據。
+            </p>
+          </div>
+          <div class="card card-blue">
+            <div class="card-title" style="font-size:16px;">2. 形成性評量</div>
+            <p class="card-text" style="font-size:13.5px;">
+              <strong>Timing</strong>: 教學進行中<br>
+              <strong>Goal</strong>: 平時考、隨堂測驗，提供即時回饋給師生調整進度。
+            </p>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title" style="font-size:16px;">3. 診斷性評量</div>
+            <p class="card-text" style="font-size:13.5px;">
+              <strong>Timing</strong>: 學習困難時<br>
+              <strong>Goal</strong>: 視教學需要進行，深入剖析特定學習障礙原因。
+            </p>
+          </div>
+          <div class="card card-accent">
+            <div class="card-title" style="font-size:16px;">4. 總結性評量</div>
+            <p class="card-text" style="font-size:13.5px;">
+              <strong>Timing</strong>: 教學結束後<br>
+              <strong>Goal</strong>: 定期考察、期末考，評定整體學習成效與等級。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: 命題四大步驟 -->
+      <div class="slide">
+        <span class="slide-tag">一、命題定位</span>
+        <h2 class="slide-title">紙筆測驗命題四大步驟</h2>
+        <div class="grid-4">
+          <div class="card card-accent" style="text-align:center;">
+            <div style="font-size:28px; color:var(--navy-primary); font-weight:800;">STEP 1</div>
+            <div class="card-title" style="justify-content:center; margin-top:8px;">決定測驗目的</div>
+            <p class="card-text" style="font-size:13px;">釐清是總結性定期考察，抑或是形成性能力檢測。</p>
+          </div>
+          <div class="card card-blue" style="text-align:center;">
+            <div style="font-size:28px; color:var(--blue-accent); font-weight:800;">STEP 2</div>
+            <div class="card-title" style="justify-content:center; margin-top:8px;">目標與細目表</div>
+            <p class="card-text" style="font-size:13px;">對應學習重點、劃定範圍，建立雙向細目表。</p>
+          </div>
+          <div class="card card-gold" style="text-align:center;">
+            <div style="font-size:28px; color:var(--gold-accent); font-weight:800;">STEP 3</div>
+            <div class="card-title" style="justify-content:center; margin-top:8px;">題型與編輯</div>
+            <p class="card-text" style="font-size:13px;">選擇合適題型，進行試題編寫、排序與配分。</p>
+          </div>
+          <div class="card card-accent" style="text-align:center;">
+            <div style="font-size:28px; color:var(--navy-primary); font-weight:800;">STEP 4</div>
+            <div class="card-title" style="justify-content:center; margin-top:8px;">修正與檢核</div>
+            <p class="card-text" style="font-size:13px;">進行質性與量化分析，比對歷史考卷查重。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 5: 心理計量學四大指標 -->
+      <div class="slide">
+        <span class="slide-tag">二、心理計量</span>
+        <h2 class="slide-title">心理計量學四大核心指標 (Psychometrics)</h2>
+        <div class="grid-2">
+          <div class="card card-accent">
+            <div class="card-title">🎯 效度 (Validity) — 「測得準不準？」</div>
+            <p class="card-text">測驗內容是否能真正測量到欲評量的學科特質與學習目標。</p>
+          </div>
+          <div class="card card-blue">
+            <div class="card-title">🛡️ 信度 (Reliability) — 「測得穩不穩？」</div>
+            <p class="card-text">測驗結果的一致性與可靠性，重複施測應獲得相近的結果。</p>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">⚖️ 鑑別度 (Discrimination) — 「分得出高下嗎？」</div>
+            <p class="card-text">試題能否有效區分學習成就高與學習成就低的學生。</p>
+          </div>
+          <div class="card card-accent">
+            <div class="card-title">📊 難度 (Difficulty) — 「深淺適中嗎？」</div>
+            <p class="card-text">整份試卷與個別試題的難易程度是否落在合理範圍內。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6: 難度與鑑別度公式 -->
+      <div class="slide">
+        <span class="slide-tag">二、心理計量</span>
+        <h2 class="slide-title">難度指數與鑑別度指數之計算與篩選</h2>
+        <div class="grid-2">
+          <div class="card card-accent">
+            <div class="card-title">1. 難度指數 ($P$)</div>
+            <p class="card-text">公式：$$P = \frac{R}{N}$$</p>
+            <p class="card-text" style="font-size:13.5px; margin-top:4px;">
+              ($R$: 答對人數、$N$: 總人數)。數值越大表示題目越簡單。
+            </p>
+            <div class="highlight-box">
+              <strong>篩題原則</strong>：<br>
+              • 個別試題 $P$ 值建議在 <strong>0.4 ～ 0.8</strong>。<br>
+              • 整份試卷平均 $P$ 值維持在 <strong>0.5 左右</strong>。
+            </div>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">2. 鑑別度指數 ($D$)</div>
+            <p class="card-text">公式：$$D = P_H - P_L$$</p>
+            <p class="card-text" style="font-size:13.5px; margin-top:4px;">
+              ($P_H$: 高分組答對率、$P_L$: 低分組答對率)。介於 -1 到 +1。
+            </p>
+            <div class="highlight-gold-box">
+              <strong>鑑別度評定標準</strong>：<br>
+              • $D \ge 0.40$：<strong>非常優良</strong><br>
+              • $0.30 \le D \le 0.39$：<strong>優良</strong><br>
+              • $0.20 \le D \le 0.29$：<strong>尚可</strong><br>
+              • $D \le 0.19$：<strong>劣（需修改或淘汰）</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7: 雙向細目表功能 -->
+      <div class="slide">
+        <span class="slide-tag">二、心理計量</span>
+        <h2 class="slide-title">雙向細目表 (Table of Specifications) 之功能</h2>
+        <div class="grid-3">
+          <div class="card card-accent">
+            <div class="card-title">1. 檢核教學相關性</div>
+            <p class="card-text">確保命題範圍與教師教學內容、學生學習重點 100% 緊密呼應。</p>
+          </div>
+          <div class="card card-blue">
+            <div class="card-title">2. 控管試卷品質</div>
+            <p class="card-text">精確掌握各認知歷程層次的配分比例與題目分佈，避免題目過度偏重記憶。</p>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">3. 評估試卷難易度</div>
+            <p class="card-text">透過認知層次與題型配分預估整體試卷難易度，維持跨學期品質穩定。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 8: Bloom 分類表應用 -->
+      <div class="slide">
+        <span class="slide-tag">二、心理計量</span>
+        <h2 class="slide-title">Bloom 雙向度認知目標分類表應用</h2>
+        <div class="card card-accent">
+          <div class="card-title">📋 知識向度 × 認知歷程向度矩陣</div>
+          <table class="styled-table" style="font-size:12.5px;">
+            <tr>
+              <th>知識向度</th>
+              <th>記憶 (Remember)</th>
+              <th>了解 (Understand)</th>
+              <th>應用 (Apply)</th>
+              <th>分析 (Analyze)</th>
+              <th>評鑑 (Evaluate)</th>
+              <th>創造 (Create)</th>
+            </tr>
+            <tr>
+              <td><strong>事實知識</strong></td>
+              <td>特定專有名詞</td>
+              <td>說明事實意義</td>
+              <td>使用數據</td>
+              <td>區分要素</td>
+              <td>檢驗真實性</td>
+              <td>設計表格</td>
+            </tr>
+            <tr>
+              <td><strong>概念知識</strong></td>
+              <td>記憶分類原則</td>
+              <td>解釋原理解釋</td>
+              <td>運用法則解題</td>
+              <td>分析結構關係</td>
+              <td>評估理論適切性</td>
+              <td>建構模型</td>
+            </tr>
+            <tr>
+              <td><strong>程序知識</strong></td>
+              <td>記憶步驟順序</td>
+              <td>說明實驗步驟</td>
+              <td>執行演算程序</td>
+              <td>分析程序錯誤</td>
+              <td>評判最佳方法</td>
+              <td>擬定計畫</td>
+            </tr>
+            <tr>
+              <td><strong>後設認知</strong></td>
+              <td>知曉自我記憶法</td>
+              <td>理解自我偏誤</td>
+              <td>選擇自我策略</td>
+              <td>分析思考歷程</td>
+              <td>反思解題合理性</td>
+              <td>創造新策略</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Slide 9: 授課時數與配分計算 -->
+      <div class="slide">
+        <span class="slide-tag">二、心理計量</span>
+        <h2 class="slide-title">授課時數與試卷配分比例估算實例</h2>
+        <div class="card card-blue">
+          <div class="card-title">📊 自然科單元授課時數與配分對照</div>
+          <table class="styled-table">
+            <tr>
+              <th>單元主題</th>
+              <th>課程內容</th>
+              <th>授課時數（分）</th>
+              <th>時數比例</th>
+              <th>試卷配分</th>
+            </tr>
+            <tr>
+              <td rowspan="4"><strong>三、防鏽與防腐</strong></td>
+              <td>鐵器生鏽的因素探討</td>
+              <td>210</td>
+              <td>20%</td>
+              <td>26 分</td>
+            </tr>
+            <tr>
+              <td>防止鐵器生鏽的方法</td>
+              <td>73</td>
+              <td>7%</td>
+              <td>6 分</td>
+            </tr>
+            <tr>
+              <td>食物腐敗的因素</td>
+              <td>104</td>
+              <td>10%</td>
+              <td>12 分</td>
+            </tr>
+            <tr>
+              <td>食物保存的方法</td>
+              <td>53</td>
+              <td>5%</td>
+              <td>8 分</td>
+            </tr>
+            <tr>
+              <td rowspan="2"><strong>四、奇妙的電磁世界</strong></td>
+              <td>指北針的指針是什麼做的</td>
+              <td>150</td>
+              <td>14%</td>
+              <td>14 分</td>
+            </tr>
+            <tr>
+              <td>電磁鐵的製作</td>
+              <td>450</td>
+              <td>43%</td>
+              <td>34 分</td>
+            </tr>
+            <tr style="font-weight:bold; background:#e2e8f0;">
+              <td colspan="2">小計</td>
+              <td>1,040 分鐘</td>
+              <td>100%</td>
+              <td>100 分</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Slide 10: 成績統計分析 -->
+      <div class="slide">
+        <span class="slide-tag">二、心理計量</span>
+        <h2 class="slide-title">學年成績統計表分析（平均數與標準差）</h2>
+        <div class="grid-1-2">
+          <div class="card card-gold">
+            <div class="card-title">📈 統計數據範例（五年級數學）</div>
+            <table class="styled-table" style="font-size:12px;">
+              <tr>
+                <th>班級</th>
+                <th>平均數</th>
+                <th>標準差</th>
+              </tr>
+              <tr>
+                <td><strong>A班</strong></td>
+                <td>68.96</td>
+                <td>13.82</td>
+              </tr>
+              <tr>
+                <td><strong>E班</strong></td>
+                <td>61.86 (最低)</td>
+                <td>16.23</td>
+              </tr>
+              <tr>
+                <td><strong>G班</strong></td>
+                <td>66.16</td>
+                <td>20.55 (最高)</td>
+              </tr>
+              <tr style="background:#fef3c7;">
+                <td><strong>J班</strong></td>
+                <td>75.46 (最高)</td>
+                <td>13.63 (最低)</td>
+              </tr>
+            </table>
+          </div>
+          <div class="card card-accent">
+            <div class="card-title">🔍 解析雙維度：評量 vs. 教學</div>
+            <ul class="styled-list">
+              <li><strong>評量角度</strong>：J 班分數最高且標準差最小，代表學生整體掌握度高且落差小；G 班標準差最大（20.55），代表雙峰現象嚴重。</li>
+              <li><strong>教學角度</strong>：需針對 G 班執行扶弱拔尖與差異化教學；檢視試卷難易度是否造成某些班級嚴重挫折。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 11: 是非題編撰原則 -->
+      <div class="slide">
+        <span class="slide-tag">三、題型原則</span>
+        <h2 class="slide-title">客觀測驗：是非題編寫原則與規範</h2>
+        <div class="grid-2">
+          <div class="card card-accent">
+            <div class="card-title">✅ 正確編寫要求</div>
+            <ul class="styled-list">
+              <li>文字敘述力求簡要，避免冗長複雜。</li>
+              <li>對與錯的題目在敘述長度上應接近相同。</li>
+              <li>對與錯的題數宜大致相等，且隨機排列。</li>
+              <li>在因果關係題型中，<strong>結果敘述必須為真</strong>，原因敘述可對可錯。</li>
+            </ul>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">❌ 應避免的陷阱</div>
+            <ul class="styled-list">
+              <li><strong>避免否定敘述</strong>：尤其是雙重否定。</li>
+              <li><strong>避免一題包含兩個概念</strong>：否則無法診斷學生究竟哪部分出錯。</li>
+              <li><strong>避免暗示性特殊字詞</strong>：如「絕對」、「一定」、「總是」。</li>
+              <li><strong>避免含糊不確定的數量用語</strong>：如「許多」、「有時」。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 12: 是非題常見缺失與修正 -->
+      <div class="slide">
+        <span class="slide-tag">三、題型原則</span>
+        <h2 class="slide-title">是非題常見缺失與修正檢核實例</h2>
+        <div class="card card-accent">
+          <div class="card-title">🛠️ 命題檢核實例分析</div>
+          <ul class="styled-list">
+            <li>
+              <strong style="color:#e11d48;">(×) 現代的計時工具，已經進步到「不利用」規律性，也可以測量時間。</strong><br>
+              <span style="font-size:13px; color:#64748b;">↳ 缺失：不當使用否定敘述。修正：應改為正面明確的陳述句。</span>
+            </li>
+            <li>
+              <strong style="color:#e11d48;">(×) 可以產生「毛細現象」的物品，也可以運用「虹吸現象」來讓水移動。</strong><br>
+              <span style="font-size:13px; color:#64748b;">↳ 缺失：一題包含兩個獨立概念。修正：拆分為兩題獨立檢測。</span>
+            </li>
+            <li>
+              <strong style="color:#e11d48;">(×) 保麗龍是一種「不良」的熱傳導材料，適合保持冷度，但「不適合」保持熱度。</strong><br>
+              <span style="font-size:13px; color:#64748b;">↳ 缺失：前後敘述邏輯矛盾且含雙重概念。</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Slide 13: 選擇題編撰原則 -->
+      <div class="slide">
+        <span class="slide-tag">三、題型原則</span>
+        <h2 class="slide-title">客觀測驗：選擇題編寫原則（題幹與選項）</h2>
+        <div class="grid-2">
+          <div class="card card-accent">
+            <div class="card-title">📌 題幹編寫規範</div>
+            <ul class="styled-list">
+              <li>題幹保持完整，避免語句中斷。</li>
+              <li>附圖或表格應置於<strong>題幹後、選項前</strong>。</li>
+              <li>各選項中的共同文字應放回題幹中。</li>
+              <li>題幹避免使用雙重否定。</li>
+              <li>題幹應完整敘述欲評量的主要概念。</li>
+            </ul>
+          </div>
+          <div class="card card-blue">
+            <div class="card-title">🎯 選項編寫規範</div>
+            <ul class="styled-list">
+              <li>選項表達方式保持語意與邏輯一致。</li>
+              <li>錯誤選項必須具備真正的<strong>誘答力 (Distractibility)</strong>。</li>
+              <li>避免「以上皆非」與「以上皆是」的選項。</li>
+              <li>正確答案必須是公認且不具爭議性的。</li>
+              <li>每一題的選項數目保持一致。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 14: 選擇題缺失診斷 -->
+      <div class="slide">
+        <span class="slide-tag">三、題型原則</span>
+        <h2 class="slide-title">選擇題常見缺失診斷與修正範例</h2>
+        <div class="grid-2">
+          <div class="card card-gold">
+            <div class="card-title">❌ 缺失一：選項包含共同字詞</div>
+            <p class="card-text" style="font-size:13.5px;">
+              當書包掛在槓桿左邊哪一個位置時最省力？<br>
+              (1)離支點20公分 (2)離支點30公分 (3)離支點25公分 (4)離支點35公分。<br>
+              <strong style="color:#d97706;">↳ 修正：將「離支點」與「公分」放回題幹。</strong>
+            </p>
+          </div>
+          <div class="card card-accent">
+            <div class="card-title">❌ 缺失二：誘答選項搞笑無效</div>
+            <p class="card-text" style="font-size:13.5px;">
+              為什麼他要改變貼紙的張數？<br>
+              (1)好玩 (2)好看 (3)做錯試驗了 (4)製造大小不同的細縫。<br>
+              <strong style="color:#1e3a8a;">↳ 修正：(1)(2)(3)非有效迷思概念，缺乏診斷價值。</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 15: 配合題與填充題對照 -->
+      <div class="slide">
+        <span class="slide-tag">三、題型原則</span>
+        <h2 class="slide-title">配合題與填充題命題原則對照表</h2>
+        <div class="card card-accent">
+          <table class="styled-table" style="font-size:13px;">
+            <tr>
+              <th>題型</th>
+              <th>命題原則</th>
+              <th>不佳範例</th>
+              <th>佳例與修正</th>
+            </tr>
+            <tr>
+              <td><strong>配合題</strong></td>
+              <td>項目需具同質性；反應項目比問題項目多 2~3 個干擾項。</td>
+              <td>左欄混合「歷史人物、地名、發明」。問題與反應數量相等。</td>
+              <td>左欄皆為「歷史人物」，右欄皆為「代表事蹟」；問題 5 題，反應 7 個。</td>
+            </tr>
+            <tr>
+              <td><strong>填充題</strong></td>
+              <td>採用直接問答句；填寫重要概念；空格儘量在末端。</td>
+              <td>太陽系的中心是 `______`。<br>`______`是我國的首都，位於`______`。</td>
+              <td>太陽系的中心是什麼？<br>我國的首都是 `______`。</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Slide 16: 問答題與 Rubrics -->
+      <div class="slide">
+        <span class="slide-tag">三、題型原則</span>
+        <h2 class="slide-title">論文測驗（問答題）規範與評分規準</h2>
+        <div class="grid-2">
+          <div class="card card-accent">
+            <div class="card-title">📝 問答題命題原則</div>
+            <ul class="styled-list">
+              <li><strong>目標明確</strong>：對應學習目標與高階認知層次（分析、評鑑）。</li>
+              <li><strong>範圍適中</strong>：避免題目過於寬泛空泛（如「談孫中山事蹟」）。</li>
+              <li><strong>避免情緒化</strong>：著重學科知識能力，避免過度主觀感情題目。</li>
+              <li><strong>單一問題</strong>：避免一次問兩件無關的事情。</li>
+            </ul>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">📊 評分規準 (Rubrics) 設計</div>
+            <ul class="styled-list">
+              <li>由於問答題容易受評分者主觀影響，<strong>命題時即需同步擬定評分規準</strong>。</li>
+              <li>明確定義完全正確（給滿分）、部分正確（給部分分）與常見錯誤態樣。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 17: 試題內容效度檢核表 -->
+      <div class="slide">
+        <span class="slide-tag">四、審查檢核</span>
+        <h2 class="slide-title">試題內容效度質性檢核表 (8大檢查點)</h2>
+        <div class="card card-blue">
+          <div class="card-title">🔍 試前審查 8 大必檢查點</div>
+          <div class="grid-2" style="font-size:13.5px; margin-top:8px;">
+            <ul class="styled-list">
+              <li>[ ] 1. 試題內容能達成該題欲評量之目標。</li>
+              <li>[ ] 2. 試題能清楚表達題意，無語意歧義。</li>
+              <li>[ ] 3. 試題用詞簡短清晰，無冗長贅字。</li>
+              <li>[ ] 4. 試題只問一個問題，避免多重概念。</li>
+            </ul>
+            <ul class="styled-list">
+              <li>[ ] 5. 避免包含特定族群才特別熟悉的訊息。</li>
+              <li>[ ] 6. 試題與學生的真實生活經驗相結合。</li>
+              <li>[ ] 7. 避免包含暗示正確答案的線索。</li>
+              <li>[ ] 8. 避免歧視性別、種族或文化的字眼。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 18: 結語 -->
+      <div class="slide">
+        <span class="slide-tag">五、結論</span>
+        <h2 class="slide-title">追求專業發展：以高品質試題提升教育品質</h2>
+        <div class="quote-box" style="margin-top:20px; padding:30px; border-left-width:8px;">
+          <h3 style="color:var(--navy-primary); margin-bottom:12px; font-size:22px;">💡 命題專業總結</h3>
+          <p style="font-size:17px; line-height:1.8;">
+            「命題不是論對錯，而是專業發展的層次與追求。題目品質代表學校教學專業的發展，讓我們透過嚴謹、標準化且具鑑別力的試題，引導教師教學與教育提升！」
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Navigation -->
+    <div class="deck-footer">
+      <button class="nav-btn" id="prev-btn" onclick="prevSlide()">❮ 上一頁</button>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <button class="nav-btn" id="next-btn" onclick="nextSlide()">下一頁 ❯</button>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const counterEl = document.getElementById('slide-counter');
+    const progressBarEl = document.getElementById('progress-bar');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    function updateSlide() {
+      slides.forEach((slide, index) => {
+        slide.classList.remove('active');
+        if (index === currentSlide) {
+          slide.classList.add('active');
+        }
+      });
+
+      counterEl.textContent = `Slide ${currentSlide + 1} / ${totalSlides}`;
+      const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
+      progressBarEl.style.width = `${progressPercent}%`;
+
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === totalSlides - 1;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function toggleFullscreen() {
+      const container = document.getElementById('presentation-container');
+      if (!document.fullscreenElement) {
+        container.requestFullscreen().catch(err => {
+          alert(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      }
+    });
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>

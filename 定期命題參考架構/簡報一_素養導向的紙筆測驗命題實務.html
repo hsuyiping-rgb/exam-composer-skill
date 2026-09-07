@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>素養導向的紙筆測驗命題實務</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #f8fafc;
+      --navy-dark: #0f172a;
+      --navy-primary: #1e3a8a;
+      --navy-light: #1e40af;
+      --blue-accent: #3b82f6;
+      --blue-soft: #eff6ff;
+      --gold-accent: #d97706;
+      --gold-light: #fef3c7;
+      --slate-dark: #334155;
+      --slate-muted: #64748b;
+      --border-color: #e2e8f0;
+      --card-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.08), 0 8px 10px -6px rgba(30, 58, 138, 0.04);
+      --font-family: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #020617;
+      color: var(--slate-dark);
+      font-family: var(--font-family);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #presentation-container {
+      width: 100vw;
+      height: 56.25vw; /* 16:9 Aspect Ratio */
+      max-height: 100vh;
+      max-width: 177.78vh; /* 16:9 Aspect Ratio */
+      background-color: var(--bg-main);
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Bar Header */
+    .deck-header {
+      height: 52px;
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      z-index: 10;
+    }
+
+    .deck-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .deck-badge {
+      background: var(--navy-primary);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-counter {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--slate-muted);
+    }
+
+    .btn-icon {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--slate-dark);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: var(--blue-soft);
+      color: var(--navy-primary);
+      border-color: var(--blue-accent);
+    }
+
+    /* Main Slide Container */
+    .slides-wrapper {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform: translateX(30px);
+      padding: 40px 60px;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-main);
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Slide Header Components */
+    .slide-tag {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold-accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .slide-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--navy-dark);
+      margin-bottom: 24px;
+      line-height: 1.3;
+    }
+
+    /* Content Layout Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+
+    .grid-1-2 {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 28px;
+      flex: 1;
+    }
+
+    /* Common Card Styling */
+    .card {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card-accent {
+      border-top: 4px solid var(--navy-primary);
+    }
+
+    .card-gold {
+      border-top: 4px solid var(--gold-accent);
+    }
+
+    .card-blue {
+      border-top: 4px solid var(--blue-accent);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-text {
+      font-size: 15px;
+      color: var(--slate-dark);
+      line-height: 1.6;
+    }
+
+    /* Highlight Boxes */
+    .highlight-box {
+      background: var(--blue-soft);
+      border-left: 4px solid var(--blue-accent);
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--navy-primary);
+      font-weight: 500;
+    }
+
+    .highlight-gold-box {
+      background: var(--gold-light);
+      border-left: 4px solid var(--gold-accent);
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 12px;
+      font-size: 14px;
+      color: #78350f;
+      font-weight: 600;
+    }
+
+    /* List Styling */
+    ul.styled-list {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    ul.styled-list li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--slate-dark);
+    }
+
+    ul.styled-list li::before {
+      content: "•";
+      position: absolute;
+      left: 6px;
+      color: var(--blue-accent);
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    /* Table Styling */
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .styled-table th {
+      background: var(--navy-primary);
+      color: white;
+      font-weight: 700;
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+
+    .styled-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+      color: var(--slate-dark);
+    }
+
+    .styled-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .styled-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    /* Title Slide Specifics */
+    .title-slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-primary) 100%);
+      margin: -40px -60px;
+      padding: 80px 100px;
+      color: white;
+    }
+
+    .title-slide-tag {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid #f59e0b;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .title-slide-h1 {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    .title-slide-subtitle {
+      font-size: 22px;
+      color: #94a3b8;
+      margin-bottom: 40px;
+      font-weight: 400;
+    }
+
+    .title-slide-meta {
+      display: flex;
+      gap: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 24px;
+      width: 100%;
+    }
+
+    .meta-item {
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    .meta-item strong {
+      color: #ffffff;
+    }
+
+    /* Quote Box */
+    .quote-box {
+      background: white;
+      border-left: 6px solid var(--navy-primary);
+      padding: 20px 24px;
+      border-radius: 0 8px 8px 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--navy-dark);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+    }
+
+    /* Bottom Control Bar */
+    .deck-footer {
+      height: 48px;
+      background: white;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      z-index: 10;
+    }
+
+    .progress-bar-container {
+      flex: 1;
+      height: 6px;
+      background: var(--border-color);
+      border-radius: 3px;
+      margin: 0 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--navy-primary), var(--blue-accent));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .nav-btn {
+      background: var(--navy-primary);
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: var(--navy-light);
+    }
+
+    .nav-btn:disabled {
+      background: var(--border-color);
+      color: var(--slate-muted);
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="presentation-container">
+    <!-- Header -->
+    <div class="deck-header">
+      <div class="deck-title">
+        <span class="deck-badge">簡報一</span>
+        素養導向的紙筆測驗命題實務
+      </div>
+      <div class="header-controls">
+        <span class="slide-counter" id="slide-counter">Slide 1 / 17</span>
+        <button class="btn-icon" onclick="toggleFullscreen()">全螢幕 ⛶</button>
+      </div>
+    </div>
+
+    <!-- Slides Wrapper -->
+    <div class="slides-wrapper">
+
+      <!-- Slide 1: Title Slide -->
+      <div class="slide active">
+        <div class="title-slide-content">
+          <div class="title-slide-tag">定期考察命題技能・專題簡報</div>
+          <h1 class="title-slide-h1">素養導向的紙筆測驗<br>命題實務與設計策略</h1>
+          <div class="title-slide-subtitle">從真實情境、高階思考歷程到跨學科範例解析</div>
+          <div class="title-slide-meta">
+            <div class="meta-item">主講人：<strong>許以平</strong></div>
+            <div class="meta-item">適用對象：<strong>國民小學命題教師與審題團隊</strong></div>
+            <div class="meta-item">視覺風格：<strong>現代簡約・專業學術風</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2: 現況診斷 -->
+      <div class="slide">
+        <span class="slide-tag">一、現況診斷</span>
+        <h2 class="slide-title">傳統試題 vs. 素養試題的認知挑戰</h2>
+        <div class="grid-2">
+          <div class="card card-accent">
+            <div class="card-title">❌ 傳統紙筆測驗的限制</div>
+            <ul class="styled-list">
+              <li><strong>死記硬背知識點</strong>：僅檢測學生是否記住特定記憶性名詞。</li>
+              <li><strong>去情境化題目</strong>：去除了實際應用時的時空脈絡與限制條件。</li>
+              <li><strong>低認知層次</strong>：大部分題目停留在 Bloom 的「記憶」與「理解」。</li>
+              <li><strong>引導式答題過度提示</strong>：幫學生建好步驟，無法測量獨立思考能力。</li>
+            </ul>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">🎯 素養導向評量的新解答</div>
+            <ul class="styled-list">
+              <li><strong>真實情境連結</strong>：將學科知識置於真實生活或學術探究情境中。</li>
+              <li><strong>高階認知歷程</strong>：強調 Bloom 的「應用、分析、評鑑與創造」。</li>
+              <li><strong>問題解決能力</strong>：要求學生主動擷取資訊、選擇策略並解釋理由。</li>
+              <li><strong>圖文與跨領域轉換</strong>：整合圖表、文字與數據做跨能力評量。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: 閱讀負荷分析 -->
+      <div class="slide">
+        <span class="slide-tag">一、現況診斷</span>
+        <h2 class="slide-title">閱讀負荷與作答時間實證估算</h2>
+        <div class="quote-box">
+          「學測社會科試卷總字數約 12,854 字（含符號達 16,670 字元），110 分鐘內學生平均需以 <strong>117 字／分鐘</strong> 的速度閱讀。這已落入高認知負荷區間，幾乎沒有慢慢看的空間！」
+        </div>
+        <div class="grid-2">
+          <div class="card card-blue">
+            <div class="card-title">📊 學生閱讀速度與負荷類型</div>
+            <table class="styled-table">
+              <tr>
+                <th>閱讀類型</th>
+                <th>每分鐘閱讀量</th>
+              </tr>
+              <tr>
+                <td>輕鬆閱讀（故事小說）</td>
+                <td>200 – 300 字</td>
+              </tr>
+              <tr>
+                <td>理解型閱讀（說明文）</td>
+                <td>120 – 180 字</td>
+              </tr>
+              <tr style="background:#fef3c7; font-weight:bold; color:#78350f;">
+                <td>高認知負荷（題目判讀與解題）</td>
+                <td>80 – 130 字</td>
+              </tr>
+            </table>
+          </div>
+          <div class="card card-accent">
+            <div class="card-title">💡 命題者的啟示：素養型閱讀能力</div>
+            <p class="card-text">素養導向並非單純「把題目改長」，而是訓練並評量學生的<strong>核心閱讀能力</strong>：</p>
+            <ul class="styled-list">
+              <li>快速掃描關鍵詞（關係詞、因果詞、立場語句）。</li>
+              <li>有效捨棄非必要的干擾訊息。</li>
+              <li>用結構理解取代逐字推敲。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: 國小各年級閱讀參考值 -->
+      <div class="slide">
+        <span class="slide-tag">一、現況診斷</span>
+        <h2 class="slide-title">國小各年級閱讀速度與作答時間對照</h2>
+        <div class="grid-1-2">
+          <div class="card card-gold">
+            <div class="card-title">⏱️ 閱讀負荷估算（以國小高年級社會試卷為例）</div>
+            <ul class="styled-list">
+              <li>一般選擇題：30題 × 70字 ≈ 2,100字</li>
+              <li>情境閱讀框：2篇 × 220字 ≈ 440字</li>
+              <li>圖表與標題：約 200字</li>
+              <li><strong>合計總字數：2,700 ～ 3,000 字</strong></li>
+            </ul>
+            <div class="highlight-gold-box">
+              純閱讀需 25 分鐘；加上思考、看圖與作答書寫，真實認知時間需 <strong>45～55 分鐘</strong>！
+            </div>
+          </div>
+          <div class="card card-accent">
+            <div class="card-title">🏫 國小各年級理解型閱讀速度與狀態</div>
+            <table class="styled-table">
+              <tr>
+                <th>年級階段</th>
+                <th>每分鐘理解閱讀量</th>
+                <th>教學與作答常見狀態</th>
+              </tr>
+              <tr>
+                <td><strong>低年級（一、二）</strong></td>
+                <td>30 – 60 字</td>
+                <td>逐字讀、常需指讀，理解仰賴教師提問。</td>
+              </tr>
+              <tr>
+                <td><strong>中年級（三、四）</strong></td>
+                <td>60 – 100 字</td>
+                <td>能閱讀句群，但遇到過長句子易迷失重點。</td>
+              </tr>
+              <tr>
+                <td><strong>高年級（五、六）</strong></td>
+                <td>100 – 140 字</td>
+                <td>可閱讀完整段落，開始具備抓重點與推論能力。</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 5: 四大要素 -->
+      <div class="slide">
+        <span class="slide-tag">二、核心要素</span>
+        <h2 class="slide-title">素養導向「紙筆測驗」考量四大要素</h2>
+        <div class="grid-2">
+          <div class="card card-accent">
+            <div class="card-title">01 生活情境 (Context)</div>
+            <p class="card-text">題目情境應具備真實性與貼近學生生活經驗，讓問題產生意義與被解決的需求。</p>
+          </div>
+          <div class="card card-blue">
+            <div class="card-title">02 學習內容 (Content)</div>
+            <p class="card-text">緊扣 108 課綱領域學習內容條目，確保題目的學科知識核心不偏移。</p>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">03 學習表現 (Performance)</div>
+            <p class="card-text">呼應學習表現指標，評量學生如何操作、推理、表達、批判與後設思考。</p>
+          </div>
+          <div class="card card-accent">
+            <div class="card-title">04 領域核心素養 (Competency)</div>
+            <p class="card-text">融入總綱與領域核心素養，培養跨學科解決實際問題的整合能力。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6: 情境界定 -->
+      <div class="slide">
+        <span class="slide-tag">二、核心要素</span>
+        <h2 class="slide-title">如何界定「真實的情境與真實的問題」？</h2>
+        <div class="grid-3">
+          <div class="card card-accent">
+            <div class="card-title">🏙️ 生活情境</div>
+            <p class="card-text">個人生活、健康飲食、購物消費、家庭活動或社區參與等貼近切身經驗的場景。</p>
+          </div>
+          <div class="card card-blue">
+            <div class="card-title">📖 學習脈絡情境</div>
+            <p class="card-text">課堂討論、實驗操作、閱讀文本或校園專題探究活動等學生熟悉的學習經歷。</p>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">🔬 學術探究情境</div>
+            <p class="card-text">科學實驗數據分析、歷史史料判讀、地理圖表轉譯等學科專業思考與探究。</p>
+          </div>
+        </div>
+        <div class="highlight-box" style="margin-top:24px;">
+          📌 <strong>情境的多元包容性</strong>：情境可以是「學生曾經經歷過的」、「學生未來可能經歷的」、或是「他人的經歷但值得學習參考的」。
+        </div>
+      </div>
+
+      <!-- Slide 7: 研發策略 -->
+      <div class="slide">
+        <span class="slide-tag">二、核心要素</span>
+        <h2 class="slide-title">情境與提問研發策略歷程</h2>
+        <div class="grid-2">
+          <div class="card card-accent">
+            <div class="card-title">🔄 研發歷程雙軸線</div>
+            <ul class="styled-list">
+              <li><strong>從生活情境出發</strong>：設想身處該情境時，人們會想問什麼問題？該如何用學科工具解決？</li>
+              <li><strong>從學習內容出發</strong>：結合學習表現與核心素養，提供「說明」、「詮釋」或「選擇決定」的機會。</li>
+            </ul>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">📈 四階提問歷程</div>
+            <ul class="styled-list">
+              <li><strong>1. 形成 (Formulate)</strong>：將情境問題轉化為學科表徵或數學算式。</li>
+              <li><strong>2. 運用 (Employ)</strong>：執行程序、計算、分類與分析。</li>
+              <li><strong>3. 詮釋 (Interpret)</strong>：將數據或結果還原至情境中解釋意義。</li>
+              <li><strong>4. 評估 (Evaluate)</strong>：評析結論的合理性、限制或最佳方案。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 8: 數學範例 1 -->
+      <div class="slide">
+        <span class="slide-tag">三、實例解析・數學</span>
+        <h2 class="slide-title">【數學範例 1】探究幾何概念的由來與原理</h2>
+        <div class="card card-accent">
+          <div class="card-title">📝 試題設計比較：梯形面積公式</div>
+          <div class="grid-2" style="margin-top:12px;">
+            <div style="background:#fff1f2; padding:16px; border-radius:8px; border-left:4px solid #f43f5e;">
+              <strong style="color:#9f1239;">❌ 傳統計算題</strong><br><br>
+              「已知一梯形上底為 6 公分、下底為 10 公分、高為 4 公分，請問其面積是多少平方公分？」<br><br>
+              <em style="font-size:13px; color:#881337;">（僅檢測公式代入與基本乘除計算）</em>
+            </div>
+            <div style="background:#f0fdf4; padding:16px; border-radius:8px; border-left:4px solid #22c55e;">
+              <strong style="color:#166534;">🎯 素養導向探究題</strong><br><br>
+              「請說明如何利用『上底』、『下底』與『高』來表示梯形的面積公式，並繪圖解釋其推導原理。」<br><br>
+              <em style="font-size:13px; color:#14532d;">（評量學生幾何概念的形成、表徵轉換與說明能力）</em>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 9: 數學範例 2 -->
+      <div class="slide">
+        <span class="slide-tag">三、實例解析・數學</span>
+        <h2 class="slide-title">【數學範例 2】應用數學概念解決真實問題</h2>
+        <div class="card card-blue">
+          <div class="card-title">🌷 試題情境：校園綠美化花圃設計</div>
+          <p class="card-text" style="margin-bottom:16px;">
+            小明的學校正在舉辦校園綠美化活動，老師請他們設計一個花圃。小明設計的花圃形狀為梯形，上底長 6 公尺，下底長 10 公尺，高度為 4 公尺。
+          </p>
+          <div class="grid-2">
+            <div class="highlight-box">
+              <strong>問題 (1)</strong>：請問這個花圃的面積是多少平方公尺？<br>
+              <span style="font-size:13px; color:#475569;">（基礎觀念應用：$(6+10) \times 4 \div 2 = 32 \text{ m}^2$）</span>
+            </div>
+            <div class="highlight-gold-box">
+              <strong>問題 (2)</strong>：如果每 1 平方公尺最多可以種 5 株花，請問這個花圃最多可以種幾株花？<br>
+              <span style="font-size:13px; color:#78350f;">（兩步驟情境連結：$32 \times 5 = 160 \text{ 株}$）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 10: 數學範例 3 -->
+      <div class="slide">
+        <span class="slide-tag">三、實例解析・數學</span>
+        <h2 class="slide-title">【數學範例 3】幾何圖形性質與材料最佳化探究</h2>
+        <div class="card card-gold">
+          <div class="card-title">🎲 手作立方體骰子比賽</div>
+          <p class="card-text" style="font-size:14px; margin-bottom:12px;">
+            提供兩張紙板：紙板 A (45×30cm)、紙板 B (36×36cm)，與三種展開圖（A型:十字型、B型:階梯型3-2-1、C型:T字型）。規則：每個展開圖需完整置於單張紙板，正方形邊長為整數公分，相鄰邊預留 0.6cm 黏貼邊。
+          </p>
+          <div class="grid-3">
+            <div style="background:#f8fafc; padding:12px; border-radius:6px; border:1px solid #cbd5e1;">
+              <strong>問題 1：極限計算</strong><br>
+              分別計算三種展開圖在兩張紙板上能製作的最大骰子邊長。
+            </div>
+            <div style="background:#f8fafc; padding:12px; border-radius:6px; border:1px solid #cbd5e1;">
+              <strong>問題 2：組合比較</strong><br>
+              比較紙板 A 與紙板 B 的最佳組合（展開圖類型＋邊長）。
+            </div>
+            <div style="background:#f8fafc; padding:12px; border-radius:6px; border:1px solid #cbd5e1;">
+              <strong>問題 3：材料節省決策</strong><br>
+              若想製作邊長 10cm 的骰子，應選擇哪種紙板與展開圖最節省材料？
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 11: 數學範例 4 -->
+      <div class="slide">
+        <span class="slide-tag">三、實例解析・數學</span>
+        <h2 class="slide-title">【數學與文化】台鐵彰化扇形車庫（角度與面積）</h2>
+        <div class="grid-1-2">
+          <div class="card card-accent">
+            <div class="card-title">🚂 在地文化歷史情境</div>
+            <p class="card-text" style="font-size:13.5px;">
+              興建於民國 11 年的台鐵彰化機務段動力車庫，整體以轉車臺中心為圓心，轉車台直徑為 40m。兩側軌道以約 120 度角放射出去形成一座圓弧型車庫，展開如同一面扇子。
+            </p>
+          </div>
+          <div class="card card-blue">
+            <div class="card-title">📏 素養題組設計</div>
+            <ul class="styled-list">
+              <li><strong>問題 1（圓面積）</strong>：轉車臺的面積大約是幾平方公尺？</li>
+              <li><strong>問題 2（扇形面積）</strong>：軌道區的面積大約是幾平方公尺？（四捨五入取至個位）</li>
+              <li><strong>問題 3（周長計算）</strong>：轉車臺與軌道區的周長大約分別是多少公尺？</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 12: 數學範例 5 -->
+      <div class="slide">
+        <span class="slide-tag">三、實例解析・數學</span>
+        <h2 class="slide-title">【數學與生活決策】披薩尺寸與面積比較</h2>
+        <div class="grid-2">
+          <div class="card card-gold">
+            <div class="card-title">🍕 真實生活迷思概念情境</div>
+            <p class="card-text">
+              顧客：「請給我一個 12 吋海鮮披薩。」<br>
+              店員：「12 吋賣完囉！給您 2 個 6 吋披薩好嗎？總吋數是一樣的，份量也一樣喔！」
+            </p>
+            <div class="highlight-gold-box" style="margin-top:16px;">
+              <strong>問題：店員說得合理嗎？請用圖示或計算說明原因。</strong>
+            </div>
+          </div>
+          <div class="card card-accent">
+            <div class="card-title">📐 數學解析與認知評量</div>
+            <ul class="styled-list">
+              <li><strong>12吋披薩面積</strong>：$\pi \times 6^2 = 36\pi \approx 113.1 \text{ 吋}^2$</li>
+              <li><strong>2個6吋披薩面積</strong>：$2 \times (\pi \times 3^2) = 18\pi \approx 56.5 \text{ 吋}^2$</li>
+              <li><strong>認知考驗</strong>：評量學生是否理解「圓面積與半徑呈平方倍關係」，而非線性直徑相加。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 13: 數學範例 6 -->
+      <div class="slide">
+        <span class="slide-tag">三、實例解析・數學</span>
+        <h2 class="slide-title">【數學與生活決策】優惠方案與購票計畫</h2>
+        <div class="grid-2">
+          <div class="card card-blue">
+            <div class="card-title">🏷️ 餐廳優惠最佳化</div>
+            <p class="card-text" style="font-size:13.5px;">
+              方案一：三人同行一人免費。<br>
+              方案二：消費超過 800 元折價 100 元。<br>
+              <strong>問題</strong>：三人皆點 270 元餐點用方案一、與雙人套餐 890 元用方案二，每人各需付多少錢？
+            </p>
+          </div>
+          <div class="card card-accent">
+            <div class="card-title">🎬 電影購票團體計畫</div>
+            <p class="card-text" style="font-size:13.5px;">
+              成人票 280元、學生票 220元、團體票(5人以上) 200元/人。<br>
+              <strong>問題</strong>：6 位學生同行，買學生票 vs. 團體票何者劃算？請說明理由。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 14: 自然範例 -->
+      <div class="slide">
+        <span class="slide-tag">三、實例解析・自然</span>
+        <h2 class="slide-title">【自然科學探究】數據分析與實驗假設</h2>
+        <div class="card card-accent">
+          <div class="card-title">🕯️ 探究題型：蠟燭燃燒時間與容器體積實驗</div>
+          <p class="card-text" style="margin-bottom:12px;">
+            志華在其科學探究報告中，利用散佈圖呈現「蠟燭燃燒時間（秒）」與「容器體積（$\text{cm}^3$）」之關係，點散佈呈現顯著正相關。
+          </p>
+          <div class="grid-2">
+            <div class="highlight-box">
+              <strong>探究問題擬定</strong><br>
+              請寫下志華可能提出的探究問題：<br>
+              <em>「容器體積的大小是否會影響蠟燭燃燒時間的長短？」</em>
+            </div>
+            <div class="highlight-gold-box">
+              <strong>研究假設與圖表命名</strong><br>
+              研究假設：<em>「容器體積越大，密閉空間內氧氣越充足，蠟燭燃燒時間越長。」</em>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 15: 語文範例 -->
+      <div class="slide">
+        <span class="slide-tag">三、實例解析・語文</span>
+        <h2 class="slide-title">【語文與高階閱讀】情境閱讀與深層問答</h2>
+        <div class="grid-2">
+          <div class="card card-blue">
+            <div class="card-title">🎻 《唯一的聽眾》批判思考</div>
+            <p class="card-text" style="font-size:14px;">
+              文章敘述主角拉琴被視為音癡，後遇老婦人天天聆聽並鼓勵，最終得知婦人竟是權威音樂教授。
+            </p>
+            <div class="highlight-box">
+              <strong>問答題</strong>：請從故事情節中找出一個不合理的地方，並說明為什麼。
+            </div>
+          </div>
+          <div class="card card-accent">
+            <div class="card-title">🎭 《聖誕前夜》推論與佐證</div>
+            <p class="card-text" style="font-size:14px;">
+              妹妹拿到演「狗」的角色，爸爸對她說了一句話後，妹妹態度大變並極其投入演出。
+            </p>
+            <div class="highlight-gold-box">
+              <strong>問答題</strong>：推論爸爸說了哪句話？並從故事中找出兩項表現佐證其影響。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 16: 檢核與 Rubrics -->
+      <div class="slide">
+        <span class="slide-tag">四、品質檢核</span>
+        <h2 class="slide-title">素養試題檢核與評分規準 (Rubrics) 建立</h2>
+        <div class="grid-2">
+          <div class="card card-accent">
+            <div class="card-title">🔍 試題質性檢核三要件</div>
+            <ul class="styled-list">
+              <li><strong>真實性 (Authenticity)</strong>：情境是否符合現實邏輯，而非刻意拼湊？</li>
+              <li><strong>語句通順性 (Clarity)</strong>：文字簡潔無岐義，避免不當閱讀障礙。</li>
+              <li><strong>資訊完整性 (Completeness)</strong>：解題所需的數據與圖表是否充分？</li>
+            </ul>
+          </div>
+          <div class="card card-gold">
+            <div class="card-title">📊 評分規準 (Rubrics) 設計</div>
+            <ul class="styled-list">
+              <li><strong>多維度給分</strong>：將「概念理解」、「策略運用」與「文字表達」分項給分。</li>
+              <li><strong>部分得分機制</strong>：根據學生呈現的思考歷程賦予相應分數。</li>
+              <li><strong>教學反饋診斷</strong>：透過 Rubrics 釐清學生迷思概念與學習瓶頸。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 17: 結語 -->
+      <div class="slide">
+        <span class="slide-tag">五、結論</span>
+        <h2 class="slide-title">翻轉學習體驗：以試題引導素養教學</h2>
+        <div class="quote-box" style="margin-top:20px; padding:30px; border-left-width:8px;">
+          <h3 style="color:var(--navy-primary); margin-bottom:12px; font-size:22px;">💡 命題核心總結</h3>
+          <p style="font-size:17px; line-height:1.8;">
+            「紙筆測驗不僅是學業成效的檢驗工具，更是引導教師教學與學生思考方向的指引針。設計有情境、有目的、有層次的素養試題，能培養學生帶得走、能應用的學科核心能力！」
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Navigation -->
+    <div class="deck-footer">
+      <button class="nav-btn" id="prev-btn" onclick="prevSlide()">❮ 上一頁</button>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <button class="nav-btn" id="next-btn" onclick="nextSlide()">下一頁 ❯</button>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const counterEl = document.getElementById('slide-counter');
+    const progressBarEl = document.getElementById('progress-bar');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    function updateSlide() {
+      slides.forEach((slide, index) => {
+        slide.classList.remove('active');
+        if (index === currentSlide) {
+          slide.classList.add('active');
+        }
+      });
+
+      counterEl.textContent = `Slide ${currentSlide + 1} / ${totalSlides}`;
+      const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
+      progressBarEl.style.width = `${progressPercent}%`;
+
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === totalSlides - 1;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function toggleFullscreen() {
+      const container = document.getElementById('presentation-container');
+      if (!document.fullscreenElement) {
+        container.requestFullscreen().catch(err => {
+          alert(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      }
+    });
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>
