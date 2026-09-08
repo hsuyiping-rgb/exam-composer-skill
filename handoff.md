@@ -152,7 +152,10 @@
 - ✅ **L3 Obsidian 已於 2026-09-08 在 DESKTOP-31QBU95 補寫完成**（`secondbrain/定期考察命題技能/專案工作流程.md`）：新增 115上二年級數學第一次定期考察全流程完成與功能六 NotebookLM 歸檔決策紀錄及最近更動紀錄。
 
 ## 🕐 最後更新
-- 時間：2026-09-08（二年級數學 Step 0～5 全流程 ＋ 功能六 NotebookLM 歸檔完成）
+- 時間：2026-09-08（兩份參考架構簡報的 LaTeX 亂碼修正）
+- 更新者：Claude @ DESKTOP-31QBU95
+- Git push：✅ 已推（`362aca6`）
+- 前一筆：2026-09-08（二年級數學 Step 0～5 全流程 ＋ 功能六 NotebookLM 歸檔完成）
 - 更新者：Antigravity @ DESKTOP-31QBU95
 - Git push：✅ 已推（`aba3194`）
 - 前一筆：2026-09-08（校內教師研習說明簡報 agent_exam_composition_deck.html 製作完成），Antigravity @ kfes
