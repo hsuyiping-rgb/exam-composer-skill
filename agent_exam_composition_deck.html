@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent 命題輔助系統 —— 國小定期考察出題新範式</title>
+  <!-- Chart.js CDN for interactive visual charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --accent-primary: #38bdf8; /* 天藍 */
+      --accent-secondary: #818cf8; /* 紫藍 */
+      --accent-success: #34d399; /* 綠 */
+      --accent-warning: #fbbf24; /* 黃 */
+      --accent-danger: #f87171; /* 紅 */
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Deck Container */
+    .deck-container {
+      width: 92vw;
+      height: 88vh;
+      max-width: 1400px;
+      max-height: 820px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(56, 189, 248, 0.15);
+      backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Slide Inner Wrapper */
+    .slide-wrapper {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Slide Item */
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 40px 60px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform: translateX(40px);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 16px;
+    }
+
+    .slide-title-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-tag {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-primary);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .slide-title {
+      font-size: 1.85rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      gap: 30px;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      height: 64px;
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 30px;
+      z-index: 10;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: var(--accent-primary);
+      color: #0f172a;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .progress-bar-container {
+      flex: 1;
+      max-width: 500px;
+      margin: 0 30px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      transition: width 0.3s ease;
+    }
+
+    .page-indicator {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      font-weight: 600;
+      min-width: 60px;
+    }
+
+    /* Cards & Grids */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      width: 100%;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+
+    /* Step Timeline */
+    .step-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 18px 24px;
+    }
+
+    .step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: #0f172a;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .step-content h4 {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .step-content p {
+      font-size: 0.92rem;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    /* Comparison Table */
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card-bg);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+    }
+
+    .custom-table th, .custom-table td {
+      padding: 14px 18px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .custom-table th {
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--accent-primary);
+      font-weight: 700;
+    }
+
+    .custom-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .badge-red { background: rgba(248, 113, 113, 0.2); color: var(--accent-danger); border: 1px solid rgba(248, 113, 113, 0.4); }
+    .badge-yellow { background: rgba(251, 191, 36, 0.2); color: var(--accent-warning); border: 1px solid rgba(251, 191, 36, 0.4); }
+    .badge-green { background: rgba(52, 211, 153, 0.2); color: var(--accent-success); border: 1px solid rgba(52, 211, 153, 0.4); }
+
+    /* Title Slide Specifics */
+    .title-slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 24px;
+    }
+
+    .title-badge {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-primary);
+      color: var(--accent-primary);
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .main-title {
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .sub-title {
+      font-size: 1.4rem;
+      color: var(--text-sub);
+      max-width: 800px;
+      line-height: 1.6;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 30px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    /* Highlight Box */
+    .highlight-box {
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 4px solid var(--accent-primary);
+      padding: 16px 20px;
+      border-radius: 0 12px 12px 0;
+      margin-bottom: 20px;
+    }
+
+    .highlight-box p {
+      color: #e2e8f0;
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    /* Two column split */
+    .col-split {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="deck-container">
+    <div class="slide-wrapper">
+
+      <!-- SLIDE 1: 封面 -->
+      <div class="slide active" id="slide-1">
+        <div class="title-slide-content">
+          <div class="title-badge">校內教師專業研習檔</div>
+          <h1 class="main-title">AI Agent 命題輔助系統<br>國小定期考察出題新範式</h1>
+          <p class="sub-title">兼顧素養導向、原創防撞題、歷屆考題查重與自動化雙向細目表產出</p>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-value">70%+</div>
+              <div class="stat-label">節省繁瑣行政時間</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">100%</div>
+              <div class="stat-label">AI 原創防安親班撞題</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">7 學年度</div>
+              <div class="stat-label">自動化考古題查重覆蓋</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: 傳統命題痛點 vs. AI Agent 定位 -->
+      <div class="slide" id="slide-2">
+        <div class="slide-header">
+          <div class="slide-title-group">
+            <span class="slide-tag">01. 理念與定位</span>
+            <h2 class="slide-title">傳統命題痛點 vs. AI Agent 特助定位</h2>
+          </div>
+        </div>
+        <div class="slide-body">
+          <div class="col-split">
+            <div class="highlight-box">
+              <p><strong>核心理念：</strong>AI 不是要取代教師的專業判斷，而是作為教師的「命題特助 (Pipeline)」，承擔繁瑣下載、知識點標註與計算工作，將決策權留給教師。</p>
+            </div>
+            <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+              <div class="card" style="border-left: 4px solid var(--accent-danger);">
+                <div class="card-title" style="color: var(--accent-danger);">⚠️ 傳統教師命題痛點</div>
+                <ul style="color: var(--text-sub); line-height: 1.8; padding-left: 20px; font-size: 0.95rem;">
+                  <li><strong>下載繁瑣：</strong> 需在出版社平台手動尋找並下載數十份課本/習作 PDF。</li>
+                  <li><strong>換算耗時：</strong> Bloom 認知層次與題型百分比計算繁瑣，易出現餘數配分不平。</li>
+                  <li><strong>撞題風險：</strong> 出版社自帶題庫常與安親班考題重複。</li>
+                  <li><strong>查重困難：</strong> 手動比對歷年考卷需翻閱無數 PDF。</li>
+                </ul>
+              </div>
+              <div class="card" style="border-left: 4px solid var(--accent-success);">
+                <div class="card-title" style="color: var(--accent-success);">✨ AI Agent 專屬優勢</div>
+                <ul style="color: var(--text-sub); line-height: 1.8; padding-left: 20px; font-size: 0.95rem;">
+                  <li><strong>自動歸檔：</strong> 引導登入後自動抓取並歸檔教材。</li>
+                  <li><strong>精準細目表：</strong> 自動將學習內容與學習表現雙代碼對齊。</li>
+                  <li><strong>100% 全新出題：</strong> 依教材內容全新撰寫，避開出版社題庫。</li>
+                  <li><strong>7 年考古題查重：</strong> 自動比對 108~114 歷屆考卷，提供 4 級判定。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 3: 系統六大核心亮點 -->
+      <div class="slide" id="slide-3">
+        <div class="slide-header">
+          <div class="slide-title-group">
+            <span class="slide-tag">02. 功能全覽</span>
+            <h2 class="slide-title">系統六大核心亮點與特色</h2>
+          </div>
+        </div>
+        <div class="slide-body">
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-icon">⚙️</div>
+              <div class="card-title">1. 條件彈性對話設定</div>
+              <div class="card-desc">輕鬆透過對話設定範圍、題型百分比與 Bloom 認知歷程比例，素養題獨立列項。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">📚</div>
+              <div class="card-title">2. 教材自動對齊歸檔</div>
+              <div class="card-desc">導航新北親師生平台，安全抓取康軒/翰林/南一教材，逐頁精讀標註 108 課綱代碼。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">✍️</div>
+              <div class="card-title">3. 避撞題與原創命題</div>
+              <div class="card-desc">AI 依教材全新撰寫，主動避開歷屆高頻框架，並整合高品質專業插圖渲染。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">🔍</div>
+              <div class="card-title">4. 七年歷屆考題查重</div>
+              <div class="card-desc">涵蓋 108~114 學年度 ESA 考古題，提供 ★/▲/△ 4 級判定與重寫機制。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">📄</div>
+              <div class="card-title">5. 標準 Word & 聽力 MP3</div>
+              <div class="card-desc">輸出正式試題卷、解答卷、細目表；英語科自動生成 192kbps 標準聽力音檔。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">🧠</div>
+              <div class="card-title">6. NotebookLM 知識庫歸檔</div>
+              <div class="card-desc">每一次任務自動建立單獨 NotebookLM 筆記本，彙整教材、成果與參考法規。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 4: 命題標準 Pipeline 流程圖 -->
+      <div class="slide" id="slide-4">
+        <div class="slide-header">
+          <div class="slide-title-group">
+            <span class="slide-tag">03. 運作流程</span>
+            <h2 class="slide-title">標準化 5+1 命題執行流程 (Pipeline)</h2>
+          </div>
+        </div>
+        <div class="slide-body">
+          <div class="step-timeline">
+            <div class="step-item">
+              <div class="step-num">0</div>
+              <div class="step-content">
+                <h4>Step 0：命題條件確認</h4>
+                <p>對話確認學期、年級、科目、版本、課次範圍、題型配分與 Bloom 認知層次比例，產出摘要。</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">A-1</div>
+              <div class="step-content">
+                <h4>Step A & 1：教材抓取與知識點精讀</h4>
+                <p>教師完成親師生平台登入後，Agent 接手下載教材、逐頁精讀並標註 108 課綱雙代碼。</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2-3</div>
+              <div class="step-content">
+                <h4>Step 2 & 3：細目表骨架與 AI 全新試題撰寫</h4>
+                <p>換算矩陣配分，AI 全新撰寫題目（包含素養題與高品質圖像繪製/修圖），過 6 項檢核清單。</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <h4>Step 4：108~114 七學年度 ESA 歷屆查重</h4>
+                <p>呼叫 esa-exam-review 比對 7 年考卷，若有 ★ 原題重複必須進行第二輪重寫與查重。</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">5</div>
+              <div class="step-content">
+                <h4>Step 5：Word 格式化輸出、聽力音檔與 NotebookLM 歸檔</h4>
+                <p>產出試題卷、解答卷、細目表 Word；英語科合成 MP3 音檔；最後建立獨立 NotebookLM 筆記本。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: 資安零風險與最高原則 -->
+      <div class="slide" id="slide-5">
+        <div class="slide-header">
+          <div class="slide-title-group">
+            <span class="slide-tag">04. 安全與原則</span>
+            <h2 class="slide-title">資安零風險與命題最高絕對原則</h2>
+          </div>
+        </div>
+        <div class="slide-body">
+          <div class="col-split">
+            <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+              <div class="card" style="border-top: 4px solid var(--accent-primary);">
+                <div class="card-title">🔒 絕對原則 1：Agent 不輸入密碼</div>
+                <div class="card-desc">所有出版社平台、ESA 系統、NotebookLM 之登入，<strong>一律由教師本人在瀏覽器完成</strong>。Agent 絕不經手或寫入任何帳號密碼，資安 100% 無虞。</div>
+              </div>
+              <div class="card" style="border-top: 4px solid var(--accent-secondary);">
+                <div class="card-title">🛡️ 絕對原則 2：100% 全新撰寫</div>
+                <div class="card-desc">題目一律由 AI 依據教材內容全新編寫，<strong>嚴禁直接套用出版社自帶題庫</strong>，從源頭杜絕學生在安親班做過相同題目。</div>
+              </div>
+              <div class="card" style="border-top: 4px solid var(--accent-success);">
+                <div class="card-title" style="color: #fff;">📋 試題品質 6 大必過清單</div>
+                <div class="card-desc">每題出完必須通過：1. 情境真實性 2. 語句通順 3. 資訊完整 4. 問題明確 5. 符合評量目標 6. 公平無偏見。</div>
+              </div>
+              <div class="card" style="border-top: 4px solid var(--accent-warning);">
+                <div class="card-title">🤝 暫停確認機制</div>
+                <div class="card-desc">遇到教材範圍不明確、配分無法整除或知識點對應有疑慮時，Agent 會<strong>主動暫停跳出詢問</strong>，不自行盲目決定。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 6: 避開歷屆高頻命題框架 -->
+      <div class="slide" id="slide-6">
+        <div class="slide-header">
+          <div class="slide-title-group">
+            <span class="slide-tag">05. 避撞題實戰</span>
+            <h2 class="slide-title">主動避開歷屆「高頻命題框架」</h2>
+          </div>
+        </div>
+        <div class="slide-body">
+          <div class="col-split">
+            <div class="highlight-box">
+              <p><strong>實戰經驗發現：</strong>學校歷年命題常高度集中於教科書的「典型標準題」。若直接照典型寫法出題，撞題率極高。Agent 會在撰寫時<strong>主動換角度切入</strong>，維持評量目標但改變問法。</p>
+            </div>
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>科目與傳統高頻框架</th>
+                  <th>出現歷史</th>
+                  <th>AI 建議改用的新切入角度</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>五上數學：</strong>乘除算式判斷因倍數 (7×9=63)</td>
+                  <td>108~114 連續 5 年</td>
+                  <td>改考因數判別方法（該用何算式檢驗）或單一數辨識</td>
+                </tr>
+                <tr>
+                  <td><strong>五上數學：</strong>三邊長能否圍成三角形</td>
+                  <td>108~114 出現 5 次</td>
+                  <td>改要求說明理由，或改考三個內角組合是否成立</td>
+                </tr>
+                <tr>
+                  <td><strong>二上國語：</strong>短文填空寫國字注音（第一大題）</td>
+                  <td>108~114 連續 7 年</td>
+                  <td>題型保留但短文情境全新自撰，避開歷屆用過的語境</td>
+                </tr>
+                <tr>
+                  <td><strong>二上國語：</strong>造句「除了……也……」</td>
+                  <td>109, 110, 111, 112 考 4 次</td>
+                  <td>改用範圍內其他句型（如「因此」、「不但……還……」）</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: 素養導向命題與專業插圖 -->
+      <div class="slide" id="slide-7">
+        <div class="slide-header">
+          <div class="slide-title-group">
+            <span class="slide-tag">06. 素養與圖像</span>
+            <h2 class="slide-title">素養導向命題與高品質試題插圖整合</h2>
+          </div>
+        </div>
+        <div class="slide-body">
+          <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="card">
+              <div class="card-title" style="color: var(--accent-primary);">🌟 素養導向題型要求</div>
+              <ul style="color: var(--text-sub); line-height: 1.8; padding-left: 20px; font-size: 0.95rem;">
+                <li><strong>真實情境：</strong> 佈題強調生活化、真實且合理的學習或生活情境。</li>
+                <li><strong>雙代碼對齊：</strong> 同時扣連「學習內容」與「學習表現」雙代碼。</li>
+                <li><strong>情境範疇：</strong> 標註 PISA 四大情境（個人/社會/職業/科學）。</li>
+                <li><strong>分級評分規準：</strong> 非選擇題型提供客觀的 Rubrics 評分指引。</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="card-title" style="color: var(--accent-secondary);">🖼️ 高品質圖像繪製與修正</div>
+              <ul style="color: var(--text-sub); line-height: 1.8; padding-left: 20px; font-size: 0.95rem;">
+                <li><strong>教材原圖重繪：</strong> 從 PDF 提取原圖，以 Pillow 擦除舊字並重疊 A/B/C、甲/乙/丙 標籤。</li>
+                <li><strong>AI 圖像生成：</strong> 整合 Antigravity 圖像生成技術，產生科學實驗圖、幾何圖與情境圖。</li>
+                <li><strong>印刷優化：</strong> 自動確保插圖在黑白影印下標籤與線條依然高清透亮。</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 8: 108~114 歷屆考題 ESA 自動查重 -->
+      <div class="slide" id="slide-8">
+        <div class="slide-header">
+          <div class="slide-title-group">
+            <span class="slide-tag">07. 歷屆查重</span>
+            <h2 class="slide-title">108~114 七學年度 ESA 考古題自動查重</h2>
+          </div>
+        </div>
+        <div class="slide-body">
+          <div class="col-split">
+            <div class="highlight-box">
+              <p><strong>自動化比對：</strong>將草稿送入 esa-exam-review，自動開啟 108~114 共 7 個學年度歷屆試題逐頁判讀比對，並歸類為四級判定。</p>
+            </div>
+            <div class="card-grid" style="grid-template-columns: repeat(4, 1fr);">
+              <div class="card">
+                <span class="badge badge-red">★ 接近原題重複</span>
+                <div class="card-title" style="margin-top: 10px; font-size: 1rem;">必須重寫</div>
+                <div class="card-desc" font-size="0.85rem">題幹、數字或任務極度相同者，強制重寫並跑第二輪查重。</div>
+              </div>
+              <div class="card">
+                <span class="badge badge-yellow">▲ 框架高度相似</span>
+                <div class="card-title" style="margin-top: 10px; font-size: 1rem;">教師決議</div>
+                <div class="card-desc" font-size="0.85rem">考點框架相同，說明相似處後由命題教師決定保留或微調。</div>
+              </div>
+              <div class="card">
+                <span class="badge badge-green">△ 部分相似</span>
+                <div class="card-title" style="margin-top: 10px; font-size: 1rem;">保留並記錄</div>
+                <div class="card-desc" font-size="0.85rem">考點重疊但切入角度不同，予以保留。</div>
+              </div>
+              <div class="card">
+                <span class="badge badge-green">－ 未發現相似</span>
+                <div class="card-title" style="margin-top: 10px; font-size: 1rem;">完美通過</div>
+                <div class="card-desc" font-size="0.85rem">無重複風險，安全採納。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 9: 英語科聽力測驗 MP3 音檔合成 -->
+      <div class="slide" id="slide-9">
+        <div class="slide-header">
+          <div class="slide-title-group">
+            <span class="slide-tag">08. 聽力音檔</span>
+            <h2 class="slide-title">英語科聽力測驗 MP3 音檔自動合成 (Step 5E)</h2>
+          </div>
+        </div>
+        <div class="slide-body">
+          <div class="col-split">
+            <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+              <div class="card">
+                <div class="card-title" style="color: var(--accent-primary);">🎧 專業廣播級聲音配置</div>
+                <ul style="color: var(--text-sub); line-height: 1.8; padding-left: 20px; font-size: 0.95rem;">
+                  <li><strong>自然多角色：</strong> 對話自動套用 Guy(男)、Jenny(女)、Aria(旁白) 與 YunJhe(中文開場)。</li>
+                  <li><strong>標準格式：</strong> 產出 192kbps、48kHz 單聲道 MP3 正式音檔。</li>
+                  <li><strong>精準停頓秒數：</strong> 依解答卷控制作答停頓與預設重複播放 2 次機制。</li>
+                </ul>
+              </div>
+              <div class="card">
+                <div class="card-title" style="color: var(--accent-success);">🔍 完整自動化音訊 QA</div>
+                <ul style="color: var(--text-sub); line-height: 1.8; padding-left: 20px; font-size: 0.95rem;">
+                  <li><strong>Whisper 語音轉錄：</strong> 自動轉譯音檔文字，逐字比對聽力稿與答案映射。</li>
+                  <li><strong>技術波形檢測：</strong> 檢查音量峰值 (<-2dBFS)、靜音區塊與總時長。</li>
+                  <li><strong>答案對齊驗證：</strong> 確保人名、物品、數量與肯否定問句與試卷 100% 一致。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 10: 成果交付物與 NotebookLM 歸檔 -->
+      <div class="slide" id="slide-10">
+        <div class="slide-header">
+          <div class="slide-title-group">
+            <span class="slide-tag">09. 成果交付</span>
+            <h2 class="slide-title">成果交付、題目替換與 NotebookLM 歸檔</h2>
+          </div>
+        </div>
+        <div class="slide-body">
+          <div class="card-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+            <div class="card">
+              <div class="card-icon">📁</div>
+              <div class="card-title">三大標準 Word 檔</div>
+              <div class="card-desc">
+                1. <code>正式試題卷.docx</code> (學生用)<br>
+                2. <code>教師解答卷.docx</code> (含規準)<br>
+                3. <code>雙向細目表.docx</code> (光復範本)
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-icon">🔄</div>
+              <div class="card-title">功能五：題目靈活替換</div>
+              <div class="card-desc">教師若對某題不滿意，只需說明「替換第 5 題」，Agent 即依原細目表規格重出並查重後就地替換。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">📚</div>
+              <div class="card-title">功能六：NotebookLM 歸檔</div>
+              <div class="card-desc">每次任務自動建立獨立筆記本（如 <code>115上_五年級_數學_命題成果</code>），彙整教材、試題與參考法規。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 11: 結語與人機協同建議 -->
+      <div class="slide" id="slide-11">
+        <div class="title-slide-content">
+          <div class="title-badge">人機協同 ‧ 賦能教學</div>
+          <h1 class="main-title">讓 AI 成為命題最強後盾<br>讓教師專注於教學本質</h1>
+          <p class="sub-title">節省 70% 行政與對照時間，產出更具思考深度、符合素養導向的高品質試題！</p>
+          <div style="margin-top: 30px;">
+            <button class="nav-btn" onclick="goToSlide(1)" style="font-size: 1.1rem; padding: 12px 30px; background: var(--accent-primary); color: #0f172a;">重新瀏覽簡報</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Controls Bar -->
+    <div class="controls-bar">
+      <button class="nav-btn" id="prev-btn" onclick="prevSlide()">← 上一頁</button>
+      <div class="progress-bar-container">
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <span class="page-indicator" id="page-indicator">1 / 11</span>
+      </div>
+      <button class="nav-btn" id="next-btn" onclick="nextSlide()">下一頁 →</button>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 11;
+
+    function updateSlide() {
+      document.querySelectorAll('.slide').forEach((slide, index) => {
+        if (index + 1 === currentSlide) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      // Update progress
+      const progressPercent = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+      document.getElementById('progress-fill').style.width = progressPercent + '%';
+      document.getElementById('page-indicator').textContent = `${currentSlide} / ${totalSlides}`;
+
+      // Enable/Disable Nav Buttons
+      document.getElementById('prev-btn').disabled = currentSlide === 1;
+      document.getElementById('next-btn').disabled = currentSlide === totalSlides;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function goToSlide(slideNum) {
+      currentSlide = slideNum;
+      updateSlide();
+    }
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      }
+    });
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>
