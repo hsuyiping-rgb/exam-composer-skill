@@ -4,6 +4,8 @@ desktop.ini
 .env
 *.key
 credentials.*
+__pycache__/
+*.py[cod]
 
 # 出版社教科書/備課用書/習作原始 PDF：有著作權，且檔案過大，不進版控
 命題範圍三家出版商教材/
