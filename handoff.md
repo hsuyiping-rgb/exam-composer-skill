@@ -148,11 +148,11 @@
 
 - ✅ L1 本地：`agents.md`（新增測試發現第 16 點）、`handoff.md` 已更新（兩個 Agent 的當日成果已合併）
 - ✅ L2 GitHub：已 commit + push（`hsuyiping-rgb/exam-composer-skill`）
-- ✅ **L3 Obsidian 已於 2026-09-07 在 DESKTOP-31QBU95 補寫完成**（`secondbrain/定期考察命題技能/專案工作流程.md`，179→267 行）：新增「Step 4 查重的結構性發現」與「多 Agent 併行衝突」兩節決策紀錄（含為何只改 ★ 10 題、▲ 8 題為何刻意不改的判準），並新增 8 條踩坑（ESA 三條、瀏覽器回傳值長度限制、python-docx 就地編輯、LibreOffice QA 兩陷阱、heredoc 反斜線、多 Agent 併行）。
+- ✅ **L3 Obsidian 已於 2026-09-08 在 DESKTOP-31QBU95 補寫完成**（`secondbrain/定期考察命題技能/專案工作流程.md`）：新增 115上二年級數學第一次定期考察全流程完成與功能六 NotebookLM 歸檔決策紀錄及最近更動紀錄。
 
 ## 🕐 最後更新
 - 時間：2026-09-08（二年級數學 Step 0～5 全流程 ＋ 功能六 NotebookLM 歸檔完成）
 - 更新者：Antigravity @ DESKTOP-31QBU95
-- Git push：待使用者確認後推送
+- Git push：✅ 已推（`aba3194`）
 - 前一筆：2026-09-08（校內教師研習說明簡報 agent_exam_composition_deck.html 製作完成），Antigravity @ kfes
 - 前一筆：2026-09-08（二年級國語 Step 4 查重＋B 方案改寫；五年級國語全案結案；六年級國語測試待辦結案），Claude @ DESKTOP-31QBU95，Git push ✅ commit `3dcd0b1`
