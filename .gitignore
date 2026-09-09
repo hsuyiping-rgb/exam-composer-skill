@@ -23,3 +23,6 @@ __pycache__/
 
 # 本地暫存腳本
 scratch/
+
+# Sites 發布用獨立工作區（另有專屬版控與部署）
+teacher-training-site/

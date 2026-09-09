@@ -152,11 +152,9 @@
 - ✅ **L3 Obsidian 已於 2026-09-08 在 DESKTOP-31QBU95 補寫完成**（`secondbrain/定期考察命題技能/專案工作流程.md`）：新增 115上二年級數學第一次定期考察全流程完成與功能六 NotebookLM 歸檔決策紀錄及最近更動紀錄。
 
 ## 🕐 最後更新
-- 時間：2026-09-08（兩份參考架構簡報的 LaTeX 亂碼修正）
-- 更新者：Claude @ DESKTOP-31QBU95
-- Git push：✅ 已推（`362aca6`）
-- 前一筆：2026-09-08（二年級數學 Step 0～5 全流程 ＋ 功能六 NotebookLM 歸檔完成）
-- 更新者：Antigravity @ DESKTOP-31QBU95
-- Git push：✅ 已推（`aba3194`）
-- 前一筆：2026-09-08（校內教師研習說明簡報 agent_exam_composition_deck.html 製作完成），Antigravity @ kfes
-- 前一筆：2026-09-08（二年級國語 Step 4 查重＋B 方案改寫；五年級國語全案結案；六年級國語測試待辦結案），Claude @ DESKTOP-31QBU95，Git push ✅ commit `3dcd0b1`
+- 時間：2026-09-09（三份教師口語版 HTML 整合與網站發布）
+- 更新者：Codex @ DESKTOP-HJA3024
+- 成果：依序整合「紙筆測驗的命題原則與品質檢核」、「素養導向的紙筆測驗命題實務」、「AI Agent 命題輔助系統」，建立三章切換式研習入口；原簡報的方向鍵、全螢幕與互動功能均保留。
+- 發布網址：`https://exam-composer-teacher-training.hsuyiping.chatgpt.site`
+- 發布狀態：✅ Sites 私人網站版本 1 已成功發布；整合網站的獨立工作區為 `teacher-training-site/`，由其專屬 Git 管理，主 repo 已排除該資料夾。
+- 前一筆：2026-09-08（兩份參考架構簡報的 LaTeX 亂碼修正），Claude @ DESKTOP-31QBU95，Git push ✅ commit `362aca6`
