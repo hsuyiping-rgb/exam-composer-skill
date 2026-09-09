@@ -118,6 +118,8 @@
 ## 🚦 目前狀態
 
 - ✅ **`agent_exam_composition_deck.html` 面向校內教師之 AI Agent 定期考察命題研習說明簡報製作完成（Antigravity @ kfes）**：依據 `https://github.com/hsuyiping-rgb/exam-composer-skill` 技能規範與實戰經驗，產出 11 頁全功能互動式 HTML 簡報檔 `agent_exam_composition_deck.html`（含 5+1 命題 Pipeline、高頻防撞題框架對比、7 年 ESA 考古題查重 4 級判定、聽力音檔合成與 NotebookLM 獨立筆記本歸檔說明）。
+- ✅ **GitHub repo 已由 Private 轉為 Public（2026-09-09，Codex）**：已用 `gh repo edit hsuyiping-rgb/exam-composer-skill --visibility public` 完成，並以 `gh repo view` 讀回確認 `visibility=PUBLIC`、`isPrivate=false`。公開網址：https://github.com/hsuyiping-rgb/exam-composer-skill
+- ✅ **早期六年級國語測試成果已移出 Git 追蹤（2026-09-09，Codex）**：`測試試題卷.docx`、`測試教師解答卷.docx`、`設定摘要.md` 已自目前主分支移除；本機副本保留於原資料夾，並由既有 `.gitignore` 規則避免再次納入版控。舊 commit 仍保有歷史版本，如需完全清除須另行重寫 Git 歷史。
 - ✅ **`命題成果/115上_二年級_數學_第一次定期考察/` Step 0～Step 5 全流程 ＋ 功能六歸檔完成（Antigravity）**：南一版二上數學（整冊課習教 729MB）已下載歸檔，精讀第 1～5 單元課綱雙代碼；雙向細目表 37 計分項橫縱 100 分整除矩陣；繪製 7 幅高解析教學插圖；避開歷屆高頻框架，四級判定 ★0/▲0/△4/－33；產出正式試題卷（7頁）、教師解答卷（4頁）、雙向細目表（2頁），**結構性 QA 與 LibreOffice 視覺渲染 QA 雙雙通過**；建立獨立 NotebookLM 筆記本（43 份來源，unknown=0，跨來源問答驗證通過）。剩餘事項：請命題教師實開 Word 確認排版。
 - ✅ **`命題成果/115上_五年級_數學_第一次定期考察/` 全案結案**（2026-09-07 使用者確認）：Step 0～Step 5 全流程完成、功能六 NotebookLM 歸檔完成、視覺渲染 QA 通過、第 22 題折線圖與版面留白經確認皆符合原意，**無待辦事項**。此任務不需要任何後續動作，接手的 Agent 請勿再對本卷提出修改建議。
 - ✅ **`命題成果/115上_二年級_國語_第一次定期考察/` 全流程完成（Step 0～Step 5＋Step 4 查重＋功能六）**：Step 0～3、Step 5 於 2026-09-07 完成；**功能六**於 2026-09-08 完成（筆記本 `6cdfd70a-6dc1-41ae-8641-41f603b089c8`，https://notebooklm.google.com/notebook/6cdfd70a-6dc1-41ae-8641-41f603b089c8 ，36 份來源＝10 份成果＋21 份康軒二上範圍內教材＋5 份共同參考）；**Step 4 歷屆查重**亦於 2026-09-08 完成——108～114 共 7 個學年度全數取得、14 份 PDF 全數逐頁判讀（無抽樣、無略過），判定 ★14／▲11／△5／－7，**命題教師決議採 B 方案只改寫重複程度最高的 3 題**（五-(一)-2、五-(二)-4、六-一-3），第二輪查重三處全數通過，雙向細目表因格位全維持而未更動；改寫後的 4 份成果已刪舊重傳至 NotebookLM 並通過跨來源問答驗證。**唯一剩餘事項：請命題教師用 Word 實開三份檔案確認排版。**
@@ -180,14 +182,16 @@
 ## 📎 本次收工的層級狀態
 
 - ✅ L1 本地：`agents.md`（新增測試發現第 16 點）、`handoff.md` 已更新（兩個 Agent 的當日成果已合併）
-- ✅ L2 GitHub：已 commit + push（`hsuyiping-rgb/exam-composer-skill`）
+- ✅ L2 GitHub：已 commit + push（`hsuyiping-rgb/exam-composer-skill`）；2026-09-09 已轉為 Public repo
 - ✅ **L3 Obsidian 已於 2026-09-08 在 DESKTOP-31QBU95 補寫完成**（`secondbrain/定期考察命題技能/專案工作流程.md`）：新增 115上二年級數學第一次定期考察全流程完成與功能六 NotebookLM 歸檔決策紀錄及最近更動紀錄。
 
 ## 🕐 最後更新
-- 時間：2026-09-09 下午（三年級國語 Step A 完成 4/4、Step 1 完成）
-- 更新者：Claude @ KFES-PRINCPAL
-- 成果：命題範圍經教師裁示定案（第1～6課＋學習地圖一二＋閱讀階梯一）；補齊教冊資料篇／教學篇並驗證解壓；產出 `教材內容擷取.md`（課綱代碼彙整、逐課精讀、生字 96 字、語文知識點清單）。新踩坑：這台 `python` 是 Store 空殼 alias、康軒下載的 SSO 帳號確認頁須使用者本人點。
-- Git 狀態：✅ 已 commit＋push（`c0b9a3a`；本行的回填為其後的補推）。
+- 時間：2026-09-09 下午（GitHub repo 轉 Public）
+- 更新者：Codex
+- 成果：使用 `gh repo edit` 將 `hsuyiping-rgb/exam-composer-skill` 由 Private 轉為 Public，並以 `gh repo view` 確認 `visibility=PUBLIC`、`isPrivate=false`；另將早期六年級國語測試試題卷、教師解答卷與設定摘要移出 Git 追蹤，本機副本保留。公開網址：https://github.com/hsuyiping-rgb/exam-composer-skill
+- Git 狀態：本段更新待 commit＋push。
+- 前一筆：2026-09-09 下午（三年級國語 Step A 完成 4/4、Step 1 完成），Claude @ KFES-PRINCPAL，Git push ✅ commit `c0b9a3a`
+- 前一筆成果：命題範圍經教師裁示定案（第1～6課＋學習地圖一二＋閱讀階梯一）；補齊教冊資料篇／教學篇並驗證解壓；產出 `教材內容擷取.md`（課綱代碼彙整、逐課精讀、生字 96 字、語文知識點清單）。新踩坑：這台 `python` 是 Store 空殼 alias、康軒下載的 SSO 帳號確認頁須使用者本人點。
 - 下次接手第一件事：**先做 Step 4 的高頻框架盤點**（登入 ESA 查光復國小 108～114 三上國語第一次定期評量），再回頭做 Step 2 雙向細目表骨架與 Step 3 撰題。此順序已向命題教師建議但**尚未取得回覆**，接手時請先確認。
 - ⚠️ 未處理：`.git/packed-refs.lock` 有一個 2026-09-09 10:13 留下的零位元組陳舊鎖檔，會讓 `git fetch` 報 `File exists`（`git push`／`commit` 不受影響）。已告知使用者，**未經同意未刪除**。另 `notebook/` 仍為來源不明的未追蹤資料夾，未加入版控。
 - 前一筆：2026-09-09（第四台電腦環境建置；三年級國語 Step 0 完成、Step A 取得 2/4 份教材），Claude @ KFES-PRINCPAL，Git push ✅ commit `344e5ce`
