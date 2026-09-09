@@ -97,6 +97,18 @@
     - **四台電腦環境對照（勿再寫成「都有／都沒有」）**：LibreOffice — DESKTOP-31QBU95 ✅、KFES-PRINCPAL ✅、kfes ❌、DESKTOP-HJA3024 ❌。
     - **順帶查明的資料**：`命題範圍三家出版商教材/115光復國小教科書選用一覽表(公告).pdf` **主表是圖片、文字層只有英語註腳**，要用 `page.get_pixmap(dpi=200)` 渲染後目視判讀。115 學年度**一到六年級國語文全部是康軒**；三年級其他科為閩南語康軒、客家語康軒、英語何嘉仁 Super Fun（第1－2冊）、數學南一、健體翰林、社會康軒、藝術康軒、自然康軒、綜合康軒、數位設計巨岩。
 
+20. **2026-09-09 康軒 Step A 在「側邊欄預覽區瀏覽器」實測成功，並推翻一條舊結論（Claude @ KFES-PRINCPAL）**：三年級國語任務執行 Step A 時的完整發現如下。
+    - **🔴 最重要：預覽區瀏覽器的下載會確實落到使用者的 `~\Downloads`**。先前 agents.md 第 13 點推論「預覽列內建瀏覽器會吃掉 `window.open`、需要開新視窗的流程一律走 Claude in Chrome」，**但「下載」不受此限**——本次在預覽區點「全部下載」，191MB 的 PDF 與 77MB 的 ZIP 都正常落地並通過完整性驗證。**預覽區從此可列為 Step A 的可行路線**，不必非要 Claude in Chrome。
+    - **🔴 Claude in Chrome 的分頁群組與使用者自己的視窗不共用 session（第二次踩到，這次在康軒／親師生平台）**：使用者在自己視窗登入後顯示「許以平」，但擴充功能分頁同時間 `GET /private/myfavorites` 回 **401「使用者尚未登入」**，兩者並存於同一台電腦、同一個 Chrome。更麻煩的是**使用者遍尋不著擴充功能的那個分頁**（即使把 `document.title` 改成醒目字串仍找不到，推測在另一個設定檔的視窗）。**解法：直接改用側邊欄預覽區**（`preview_start`），使用者在眼前的面板登入，session 必然一致。這條路本次一次成功。
+    - **⚠️ `preview_start` 開啟後若面板未顯示，`computer:screenshot` 會失敗**（`the Browser pane is not displayed, so the page is not compositing frames`），但 **`get_page_text`／`javascript_tool`／`read_page` 不受影響照常可用**。要請使用者手動打開瀏覽器面板才能截圖。
+    - **⚠️ `javascript_tool` 回傳非同步結果會被吃掉變成 `{}`**（`async` IIFE、`await`、Promise 皆然），不是防資料外洩攔截，是根本沒等待。**正解：拆成兩次呼叫**——第一次 `fetch(...).then(t=>{window.__x=t})` 並回傳一個同步字串，第二次同步讀 `window.__x`。此坑在 Claude in Chrome 與預覽區兩邊都存在，本次卡了四輪才確認。
+    - **康軒的授權是「兩段式」，親師生 SSO 不等於康軒會員**：`myfavorites` 取 `sso_url=https://moe.ntpc.edu.tw/kanghsuan/` → 自動 SSO 到 `ac.knsh.com.tw/oauth/authorize` → 落在康軒雲，但**只是訪客**，頁面明示「如需下載…請先至國教服務中心註冊康軒會員帳號」。**必須由使用者本人再登入一次康軒會員**；登入成功的判準是右上角「登入」字樣變成人像圖示，且 `POST /knshExtranetAPI/keygrip/VerifyKeygrip_V3` 回 200。SKILL.md 說的「授權深連結」是另一條捷徑，本次未用也走通了。
+    - **digitalmaster 網址參數可直接導航，免操作下拉選單**：`https://digitalmaster.knsh.com.tw/v3/pages/e/index.html#year=1151&field=ch&grade=3&item=teach&bookcase=online`。`e`＝國小、`j`＝國中；`year=1151`＝115上；**`field`：國語=`ch`**（其餘領域可點選單後讀 `location.hash` 取得）；`item=teach`＝教用資源。
+    - **⚠️ 窄視窗收合左側選單，第二次踩到**：預覽區預設 viewport 只有 **577×550**，整條領域／年級選單不渲染，頁面只顯示「請先點選左上選單選擇領域」。`resize_window` 拉到 1440×900 後選單立刻出現。**在預覽區操作教材網站，第一件事就是把 viewport 拉寬。**
+    - **下載按鈕無 href／無 data 屬性**（事件掛 JS），要以標題文字定位後取 `parentElement.parentElement` 內的 `<button>` 點擊；`closest('li,div')` 會抓錯層級。
+    - **康軒國語課本是單一整冊 PDF（檔名帶「全」，191MB／169 頁），習作則是 ZIP 內含整冊＋分課 15 個 PDF**，兩種形式並存，不要假設都是 ZIP。ZIP 內檔名仍為 Big5。
+    - **康軒三上（第五冊）結構**：四單元十二課，第一單元「語文萬花筒」（1字的小旅行／2妙故事點點名／3繞口令村）＋學習地圖一；第二單元「處處有真情」（4小丑魚和海葵／5飛舞的絲帶／6小女生）＋學習地圖二＋閱讀階梯一「丸子與我」。**⚠️ 三年級沒有「統整活動」，單元統整叫「學習地圖」**——低年級用語不能直接套到中年級，向命題教師確認範圍時要用該冊實際的名稱。
+
 ## 功能設計總覽（訪談結論，撰寫 SKILL.md 前的依據）
 
 1. **命題範圍設定**：老師用自然對話輸入範圍/單元/題型%/布隆姆%，最後產出設定摘要存檔。
