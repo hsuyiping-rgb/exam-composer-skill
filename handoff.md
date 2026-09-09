@@ -189,7 +189,7 @@
 - 時間：2026-09-09 下午（GitHub repo 轉 Public）
 - 更新者：Codex
 - 成果：使用 `gh repo edit` 將 `hsuyiping-rgb/exam-composer-skill` 由 Private 轉為 Public，並以 `gh repo view` 確認 `visibility=PUBLIC`、`isPrivate=false`；另將早期六年級國語測試試題卷、教師解答卷與設定摘要移出 Git 追蹤，本機副本保留。公開網址：https://github.com/hsuyiping-rgb/exam-composer-skill
-- Git 狀態：本段更新待 commit＋push。
+- Git 狀態：✅ 公開設定與測試成果移除已 commit＋push（`9ce909c`）；本次收工狀態回填另行提交。
 - 前一筆：2026-09-09 下午（三年級國語 Step A 完成 4/4、Step 1 完成），Claude @ KFES-PRINCPAL，Git push ✅ commit `c0b9a3a`
 - 前一筆成果：命題範圍經教師裁示定案（第1～6課＋學習地圖一二＋閱讀階梯一）；補齊教冊資料篇／教學篇並驗證解壓；產出 `教材內容擷取.md`（課綱代碼彙整、逐課精讀、生字 96 字、語文知識點清單）。新踩坑：這台 `python` 是 Store 空殼 alias、康軒下載的 SSO 帳號確認頁須使用者本人點。
 - 下次接手第一件事：**先做 Step 4 的高頻框架盤點**（登入 ESA 查光復國小 108～114 三上國語第一次定期評量），再回頭做 Step 2 雙向細目表骨架與 Step 3 撰題。此順序已向命題教師建議但**尚未取得回覆**，接手時請先確認。
