@@ -92,7 +92,8 @@
     - **LibreOffice 26.8.0.3**（`winget install TheDocumentFoundation.LibreOffice`），`soffice.com` 在標準路徑，`--version` 驗證通過，**Step 5 視覺渲染 QA 在這台可執行**。
     - ⚠️ **`import fitz` 已被 PyMuPDF 標記為 deprecated**，新腳本一律寫 `import pymupdf`（舊腳本仍可跑，只是會噴 warning）。
     - ⚠️ **winget 裝完後，安裝前就已開啟的 shell 吃不到新 PATH**，需重開終端；Agent 在同一 session 內請直接用完整路徑呼叫 `python.exe`。
-    - ⚠️ **這台的 git 無法 fetch／push**：`credential.helper=manager` 但憑證庫沒有 github.com 項目，非互動 session 無法讓 GCM 彈窗（`fatal: could not read Username`），且 **`gh` CLI 未安裝**。需使用者本人在互動終端跑一次 `git fetch` 完成授權。**在那之前這台只能 local commit，不能 push。**
+    - ⚠️ **git 憑證要使用者本人在互動終端建立**：`credential.helper=manager`，初期憑證庫沒有 github.com 項目，非互動 session 無法讓 GCM 彈窗（`fatal: could not read Username`），且 **`gh` CLI 未安裝**。當日已由使用者本人跑一次 `git fetch` 完成 GCM 授權，**之後 Agent 可正常 fetch／push**。給使用者的指令要注意：**Windows PowerShell 5.1 不支援 `&&`**，必須用 `;` 分隔，否則會噴 `'&&' 語彙基元不是有效的陳述式分隔符號`。
+    - ⚠️ **GDrive 上的 git ref 有讀取快取延遲**：push 成功後 `git status -sb` 仍可能顯示 `ahead 1`、`origin/master` 停在舊 commit，實際已同步。以 `git push` 回報 `Everything up-to-date` 為準，不要據此重推。
     - **四台電腦環境對照（勿再寫成「都有／都沒有」）**：LibreOffice — DESKTOP-31QBU95 ✅、KFES-PRINCPAL ✅、kfes ❌、DESKTOP-HJA3024 ❌。
     - **順帶查明的資料**：`命題範圍三家出版商教材/115光復國小教科書選用一覽表(公告).pdf` **主表是圖片、文字層只有英語註腳**，要用 `page.get_pixmap(dpi=200)` 渲染後目視判讀。115 學年度**一到六年級國語文全部是康軒**；三年級其他科為閩南語康軒、客家語康軒、英語何嘉仁 Super Fun（第1－2冊）、數學南一、健體翰林、社會康軒、藝術康軒、自然康軒、綜合康軒、數位設計巨岩。
 

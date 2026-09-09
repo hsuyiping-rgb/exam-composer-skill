@@ -164,7 +164,7 @@
 - 時間：2026-09-09（第四台電腦 KFES-PRINCPAL 環境建置；三年級國語任務開工至 Step 0）
 - 更新者：Claude @ KFES-PRINCPAL
 - 成果：補齊 Python 3.13.15（PyMuPDF／python-docx／Pillow）與 LibreOffice 26.8.0.3；查明三年級國語為康軒版；四台電腦 LibreOffice 有無對照已寫進 agents.md 第 19 點。
-- Git 狀態：⚠️ **僅 local commit，未 push**（這台 GitHub 憑證未建立、`gh` 未安裝，待使用者本人在互動終端跑 `git fetch` 授權後補推）。
+- Git 狀態：✅ 已 commit＋push（`64d45ea`）。這台的 GitHub 憑證已由使用者本人在互動終端完成授權，之後可正常 fetch／push；`gh` CLI 仍未安裝。
 - 前一筆：2026-09-09（三份教師口語版 HTML 整合與網站發布）
 - 前一筆更新者：Codex @ DESKTOP-HJA3024
 - 成果：依序整合「紙筆測驗的命題原則與品質檢核」、「素養導向的紙筆測驗命題實務」、「AI Agent 命題輔助系統」，建立三章切換式研習入口；原簡報的方向鍵、全螢幕與互動功能均保留。
