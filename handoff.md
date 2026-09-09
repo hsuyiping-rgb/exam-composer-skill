@@ -83,6 +83,15 @@
 7. **Step 5 格式化輸出與雙重 QA**：產出 `正式試題卷.docx/.pdf`（7頁）、`教師解答卷.docx/.pdf`（4頁）、`雙向細目表.docx/.pdf`（2頁）。**結構性 QA（無亂碼、無答案外洩、7圖齊全）與 LibreOffice 視覺渲染 QA 雙雙通過**！
 8. **功能六 NotebookLM 歸檔完成**：建立獨立筆記本 `115上_二年級_數學_第一次定期考察_命題成果`（`9ebd26ae-b705-419b-b31e-bdc5fe9128e2`，https://notebooklm.google.com/notebook/9ebd26ae-b705-419b-b31e-bdc5fe9128e2 ），共 43 份來源＝12 份命題成果＋5 份共同參考架構＋26 份南一二上 1～5 單元全套教材 PDF。來源型別全部就緒（unknown=0），跨來源問答驗證正確無誤。全程未呼叫 `label list`。
 
+### H. Claude @ KFES-PRINCPAL（2026-09-09，第四台電腦環境建置；三年級國語任務開工）
+
+1. **新任務啟動：`115上_三年級_國語_第一次定期考察`**，目前**停在 Step 0**，尚未建立命題成果子資料夾，尚未產出任何檔案。
+2. **版本已查明：三年級國語＝康軒**（用 PyMuPDF 200dpi 渲染 `115光復國小教科書選用一覽表(公告).pdf` 判讀，該 PDF 主表是圖片、文字層只有英語註腳）。115 學年度一到六年級國語文全部康軒。
+3. **⚠️ 三年級國語教材尚未下載**：`命題範圍三家出版商教材/康軒/` 只有二年級國語、五年級國語、五年級英語，**Step A 必跑**（需使用者提供康軒授權深連結並本人登入）。
+4. **環境補齊**：這台原本 Python／Node／LibreOffice 全無，已裝 Python 3.13.15（＋PyMuPDF／python-docx／Pillow）與 LibreOffice 26.8.0.3，詳見 agents.md 測試發現第 19 點。
+5. **⚠️ 這台不能 push**：git 憑證未建立、`gh` 未安裝，需使用者本人在互動終端跑一次 `git fetch` 授權。**本次只能 local commit。**
+6. **待釐清**：工作區出現未追蹤資料夾 `notebook/`，不在 `.gitignore` 也不在版控內，來源不明，**未加入 commit**。
+
 ## 🚦 目前狀態
 
 - ✅ **`agent_exam_composition_deck.html` 面向校內教師之 AI Agent 定期考察命題研習說明簡報製作完成（Antigravity @ kfes）**：依據 `https://github.com/hsuyiping-rgb/exam-composer-skill` 技能規範與實戰經驗，產出 11 頁全功能互動式 HTML 簡報檔 `agent_exam_composition_deck.html`（含 5+1 命題 Pipeline、高頻防撞題框架對比、7 年 ESA 考古題查重 4 級判定、聽力音檔合成與 NotebookLM 獨立筆記本歸檔說明）。
@@ -152,8 +161,12 @@
 - ✅ **L3 Obsidian 已於 2026-09-08 在 DESKTOP-31QBU95 補寫完成**（`secondbrain/定期考察命題技能/專案工作流程.md`）：新增 115上二年級數學第一次定期考察全流程完成與功能六 NotebookLM 歸檔決策紀錄及最近更動紀錄。
 
 ## 🕐 最後更新
-- 時間：2026-09-09（三份教師口語版 HTML 整合與網站發布）
-- 更新者：Codex @ DESKTOP-HJA3024
+- 時間：2026-09-09（第四台電腦 KFES-PRINCPAL 環境建置；三年級國語任務開工至 Step 0）
+- 更新者：Claude @ KFES-PRINCPAL
+- 成果：補齊 Python 3.13.15（PyMuPDF／python-docx／Pillow）與 LibreOffice 26.8.0.3；查明三年級國語為康軒版；四台電腦 LibreOffice 有無對照已寫進 agents.md 第 19 點。
+- Git 狀態：⚠️ **僅 local commit，未 push**（這台 GitHub 憑證未建立、`gh` 未安裝，待使用者本人在互動終端跑 `git fetch` 授權後補推）。
+- 前一筆：2026-09-09（三份教師口語版 HTML 整合與網站發布）
+- 前一筆更新者：Codex @ DESKTOP-HJA3024
 - 成果：依序整合「紙筆測驗的命題原則與品質檢核」、「素養導向的紙筆測驗命題實務」、「AI Agent 命題輔助系統」，建立三章切換式研習入口；原簡報的方向鍵、全螢幕與互動功能均保留。
 - 發布網址：`https://exam-composer-teacher-training.hsuyiping.chatgpt.site`
 - 發布狀態：✅ Sites 私人網站版本 1 已成功發布；整合網站的獨立工作區為 `teacher-training-site/`，由其專屬 Git 管理，主 repo 已排除該資料夾。

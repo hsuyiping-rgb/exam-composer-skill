@@ -87,6 +87,15 @@
     - **Step 5 視覺渲染 QA 已補做並通過**：`soffice.com --headless --convert-to pdf` 轉出三份（正式試題卷 7 頁／教師解答卷 3 頁／雙向細目表 2 頁），逐頁渲染為圖檢視，標題、表格、7 幅圖、作圖區皆正常，無跑版缺字；細目表橫縱合計皆 100；解答卷答案與重寫後題目一致（第 19 題 ∠B=65°／∠C=115° 對應新的平行四邊形圖），且第 20、21、26 題明訂列舉法，守住「五年級不用短除法」的課綱硬約束。留給命題教師判斷的兩點（第 22 題折線圖已預先畫兩點、版面留白偏多）記在 handoff.md。
     - **另一個踩坑**：用 Bash heredoc 寫含 Windows 路徑的 Python 時，**這層工具會把 `\\` 收斂成 `\`**，所以「多寫一個反斜線跳脫」這招無效，仍會噴 `SyntaxError: (unicode error) ... truncated \UXXXXXXXX escape`。正解是改用 Write 工具直接產生 .py 檔，或把長文另存資料檔讓 Python 讀。
 
+19. **2026-09-09 第四台電腦 `KFES-PRINCPAL` 環境建置（Claude）**：接手三年級國語任務時發現這台是全新環境，**Python／Node.js／LibreOffice 三者皆無**（`python.exe` 只有 Microsoft Store 的空殼別名，執行會跳轉商店）。已用 winget 補齊：
+    - **Python 3.13.15**（`winget install Python.Python.3.13 --scope user`），裝在 `C:\Users\hsuyiping\AppData\Local\Programs\Python\Python313\`；套件 **PyMuPDF 1.28.2／python-docx 1.2.0／Pillow 12.3.0**。
+    - **LibreOffice 26.8.0.3**（`winget install TheDocumentFoundation.LibreOffice`），`soffice.com` 在標準路徑，`--version` 驗證通過，**Step 5 視覺渲染 QA 在這台可執行**。
+    - ⚠️ **`import fitz` 已被 PyMuPDF 標記為 deprecated**，新腳本一律寫 `import pymupdf`（舊腳本仍可跑，只是會噴 warning）。
+    - ⚠️ **winget 裝完後，安裝前就已開啟的 shell 吃不到新 PATH**，需重開終端；Agent 在同一 session 內請直接用完整路徑呼叫 `python.exe`。
+    - ⚠️ **這台的 git 無法 fetch／push**：`credential.helper=manager` 但憑證庫沒有 github.com 項目，非互動 session 無法讓 GCM 彈窗（`fatal: could not read Username`），且 **`gh` CLI 未安裝**。需使用者本人在互動終端跑一次 `git fetch` 完成授權。**在那之前這台只能 local commit，不能 push。**
+    - **四台電腦環境對照（勿再寫成「都有／都沒有」）**：LibreOffice — DESKTOP-31QBU95 ✅、KFES-PRINCPAL ✅、kfes ❌、DESKTOP-HJA3024 ❌。
+    - **順帶查明的資料**：`命題範圍三家出版商教材/115光復國小教科書選用一覽表(公告).pdf` **主表是圖片、文字層只有英語註腳**，要用 `page.get_pixmap(dpi=200)` 渲染後目視判讀。115 學年度**一到六年級國語文全部是康軒**；三年級其他科為閩南語康軒、客家語康軒、英語何嘉仁 Super Fun（第1－2冊）、數學南一、健體翰林、社會康軒、藝術康軒、自然康軒、綜合康軒、數位設計巨岩。
+
 ## 功能設計總覽（訪談結論，撰寫 SKILL.md 前的依據）
 
 1. **命題範圍設定**：老師用自然對話輸入範圍/單元/題型%/布隆姆%，最後產出設定摘要存檔。
