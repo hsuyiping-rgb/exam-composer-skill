@@ -177,6 +177,13 @@
 - **🆕 python-docx 的 `a.merge(b)` 會串接兩格文字**，兩格都先寫表頭就會顯示「記憶／記憶」。**正確順序是先 merge、再對合併後的儲存格寫入**。
 - **🆕 Bash heredoc 遇超長中文內容會解析失敗**（`unexpected EOF`），寫長檔案改用 Write 工具或分段以 Python 寫入。
 - **🆕 多 Agent 併行覆蓋再度發生（2026-09-07 21:37）**：本次寫入 handoff.md 後，另一個 Agent 於 21:37 覆蓋整檔，我的段落全部消失。**教訓：改完 handoff.md 要立刻 `git add` + `commit`，不要留在工作區**；GDrive 時間戳快取會讓 `git add` 看似成功實則未生效，需 `os.utime()` 觸碰後重新 add 並用 `git show :handoff.md` 驗證。
+- **🆕 ESA 歷屆試卷可以「真的下載成檔案」，不必再用截圖判讀（2026-10-20，Claude @ kfes，側邊欄預覽區）**：在預覽區讓使用者登入後，用 `fetch` 取 PDF → `URL.createObjectURL` → 建 `<a download>` 程式化 click，檔案會確實落到使用者 `~\Downloads`。連續 7 檔每隔 1.5 秒觸發**全部成功、沒有被 Chrome 的多檔下載封鎖擋掉**（與 Step A 在真實 Chrome 的行為不同）。落地後先是 GUID `.tmp`，稍後才更名為指定檔名，**以檔案大小對回來源最可靠**。取得本機檔案後改用 PyMuPDF 渲染判讀，可任意放大、比截圖清楚太多，**低年級注音卷強烈建議走這條路**。
+- **🆕 ESA 清單可一次撈完整個學年期，不必操作下拉選單（2026-10-20 複驗通過）**：`POST /jsp/c_exammgt/ExamMgtAction.do`、body `method=examMain&mod=examMain&selseyear=<代碼>&selseyear2=<代碼>`，代碼即 `1141`＝114學年(上)、`1142`＝114學年(下)，可用 7 個代碼並行 fetch。列為 `div.row`，檔名在 `div[id^=row2_itmfile_]` 的 `no` 屬性，PDF 路徑 `/central/014796/upfile/exammgt/<檔名>`。**JS 回傳值仍要短**（只回長度、狀態碼），長檔名會觸發防資料外洩攔截。
+- **🆕 `javascript_tool` 不等非同步結果，一律拆兩次呼叫**：第一次 `fetch(...).then(t=>{window.__x=t})` 並回傳一個同步字串，第二次再同步讀 `window.__x`。這點在預覽區與 Claude in Chrome 都一樣。
+- **🆕 一上國語第一次定期評量的題型骨架連七年幾乎不變（2026-10-20 審題發現）**：108～114 逐份判讀後，「連出適當的語詞(10分)／把對的打✓(14分)／是可以吃的食物畫○✗(12分)／把對的圈起來(20分)／選出對的答案(20分)／看圖寫注音(24分)」這組骨架在 109、111、113、114 四個年度重複出現，113-1 與 115-1 更是**六大題題型完全相同**，連大題名稱、12 格 24 分的配置、卷末「寫完了，記得再多檢查幾遍！」提示框都沿用。**一上國語命題前務必先避開這組骨架**；112-1（南一）曾出現「讀一讀，選出正確答案」短文題與「用注音符號回答問題」，是現成可換的題型。
+- **🆕 `kfes` 這台的環境（2026-10-20 實測）**：Python 3.12.10 ✅、PyMuPDF 1.28.2 ✅、python-docx 1.2.0 ✅、Pillow 11.3.0 ✅、**LibreOffice ❌**（視覺渲染 QA 仍做不了，只能做結構性 QA）。四台對照更新為：LibreOffice — DESKTOP-31QBU95 ✅、KFES-PRINCPAL ✅、kfes ❌、DESKTOP-HJA3024 ❌。
+- **🆕 PowerShell 主控台是 cp950，Python `print()` 中文會噴 `UnicodeEncodeError`**：腳本要輸出中文就寫進 UTF-8 檔案再用 Read 工具讀，不要直接 print。`get_toc()` 之類回傳的中文也同理。
+- **🆕 審查意見不要臆測「資料未附」**：本次誤把「使用者沒提供雙向細目表給我看」寫成「送審資料未附，建議補附」，實際上每位教師都有附。**沒看到 ≠ 沒有**，審查報告只能就看得到的材料陳述。
 - **`exam-composer` 若要修改**：先改 repo 的 `skills/exam-composer/SKILL.md`，再同步到 `~/.gemini/config/skills/`（Antigravity 全域技能）、`~/.claude/`、`~/.codex/`、`~/.agents/` 四處，五份比對 SHA-256 後 commit。
 
 ## 📎 本次收工的層級狀態
@@ -186,8 +193,15 @@
 - ✅ **L3 Obsidian 已於 2026-09-08 在 DESKTOP-31QBU95 補寫完成**（`secondbrain/定期考察命題技能/專案工作流程.md`）：新增 115上二年級數學第一次定期考察全流程完成與功能六 NotebookLM 歸檔決策紀錄及最近更動紀錄。
 
 ## 🕐 最後更新
-- 時間：2026-09-09 下午（GitHub repo 轉 Public）
-- 更新者：Codex
+- 時間：2026-10-20（**審查端任務**：115上一年級國語期中卷審題）
+- 更新者：Claude @ kfes
+- 成果：以 `esa-exam-review` 技能完成 `115學年度第一學期期中評量一年級國語科.pdf` 全卷審查，產出 `命題審查報告_115上一年級國語期中.docx`（六節：配分結構／雙向細目分析／逐大題逐題審查 50 個計分項／歷年查重／命題原則檢核／綜合意見），存於 `G:\我的雲端硬碟\kfes\115光復\學生學習\期中考審題\`。ESA 取得 108～114 共 7 份「一上第一次定期評量」國語卷並**全數逐頁實際判讀**，歸檔於同層 `歷年試題_ESA_一上第一次定期評量\`。
+- 查重結論：**無逐字相同的原題**；但本卷六大題題型與 113-1 **完全相同（6/6）**、與 114-1 相同 5/6，另有 4 處考點／語詞與 113-1 重複（ㄓㄠˇ／ㄗㄠˇ 音節對、山羊、黑板、魔術），已建議優先替換。另查出兩處答案爭議（「浣熊」注音標 ㄨㄢˇ、「哎唷」兼收兩讀）與一處圖文不符（圖為裙子、注音為「布裙」）。
+- **對本專案（生成端）的意義**：一上國語的歷年骨架已盤點完成，可直接供 `exam-composer` Step 3「撰寫前先避開歷屆高頻命題框架」使用，細節見上方踩坑筆記。**尚未回寫進 SKILL.md 的對照表**，下次維護技能時補。
+- Git 狀態：本次只動 `handoff.md` 與 `agents.md`（審查產出不在本 repo，位於 kfes 的 115光復 資料夾）。
+- ⚠️ 未處理：`notebook/` 仍為來源不明的未追蹤資料夾，沿用前次決定未加入版控。
+- 前一筆：2026-09-09 下午（GitHub repo 轉 Public）
+- 前一筆更新者：Codex
 - 成果：使用 `gh repo edit` 將 `hsuyiping-rgb/exam-composer-skill` 由 Private 轉為 Public，並以 `gh repo view` 確認 `visibility=PUBLIC`、`isPrivate=false`；另將早期六年級國語測試試題卷、教師解答卷與設定摘要移出 Git 追蹤，本機副本保留。公開網址：https://github.com/hsuyiping-rgb/exam-composer-skill
 - Git 狀態：✅ 公開設定與測試成果移除已 commit＋push（`9ce909c`）；本次收工狀態回填另行提交。
 - 前一筆：2026-09-09 下午（三年級國語 Step A 完成 4/4、Step 1 完成），Claude @ KFES-PRINCPAL，Git push ✅ commit `c0b9a3a`
